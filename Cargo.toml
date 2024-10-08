@@ -1,0 +1,24 @@
+[workspace.lints.rust]
+
+[workspace]
+resolver = "2"
+members = [
+    "libs/client",
+    "libs/models",
+    "libs/services",
+    "libs/utils",
+    "libs/error",
+    "libs/config", 
+    "libs/sdk",
+]
+
+[workspace.dependencies]
+utils = { path = "./libs/utils" }
+
+serde = { version = "1", features = ["derive"] }
+serde_with = {version = "3", features = ["json", "time_0_3"] }
+serde_json = "1"
+
+time = { version = "0.3", features = ["formatting", "parsing", "serde", "macros", "serde-well-known"] }
+derive_more = {version = "1", features = ["from", "display"] }
+log = "^0.4"

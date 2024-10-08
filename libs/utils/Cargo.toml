@@ -1,0 +1,16 @@
+[package]
+name = "utils"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+time = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+
+base64 = "0.22"
+regex = "^1"
+strum = "0.26"
+strum_macros = "0.26"
+indexmap = "2.5.0"
+

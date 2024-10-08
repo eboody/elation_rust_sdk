@@ -1,0 +1,12 @@
+[package]
+name = "sdk"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+client = { path = "../client" }
+models = { path = "../models" }
+services = { path = "../services" }
+utils = { path = "../utils" }
+error = { path = "../error" }
+config = { path = "../config" }
