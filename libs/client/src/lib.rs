@@ -1,5 +1,6 @@
 mod client;
 pub mod config;
-pub mod error;
+mod error;
 
 pub use client::*;
+pub use error::*;

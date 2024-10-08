@@ -4,7 +4,6 @@ use derive_more::From;
 use serde::Serialize;
 use serde_with::{serde_as, DisplayFromStr};
 
-use client::Error as ClientError;
 use std::fmt;
 
 /// A specialized `Result` type for the services crate.
@@ -36,7 +35,7 @@ pub enum Error {
     ///
     /// This variant wraps `client::Error`, which can occur during HTTP requests or client operations.
     #[from]
-    ClientError(#[serde_as(as = "DisplayFromStr")] ClientError),
+    ClientError(#[serde_as(as = "DisplayFromStr")] client::Error),
 
     /// Represents an error when invalid input is provided to a service method.
     ///
@@ -61,11 +60,16 @@ impl fmt::Display for Error {
     /// ```
     fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            Error::InvalidInput(msg) => write!(fmt, "Invalid input: {}" msg),
-            Error::ServiceError(msg) => write!(fmt, "Service error: {}", msg),
-            //Error::Other(msg) => write!(fmt, "Other error: {}", msg),
+            Error::InvalidInput(msg) => write!(fmt, "Invalid input: {}", msg),
+            Error::ClientError(e) => write!(fmt, "{}", e.to_string()),
         }
     }
 }
 
 impl std::error::Error for Error {}
+
+impl From<reqwest::Error> for Error {
+    fn from(err: reqwest::Error) -> Self {
+        Error::ClientError(client::Error::ReqwestError(err))
+    }
+}

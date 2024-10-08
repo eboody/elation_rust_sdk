@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use serde_with::serde_as;
 use time::{Date, OffsetDateTime};
-use utils::time::Iso8601;
+use utils::time::Rfc3339;
 
 time::serde::format_description!(one_true_date, Date, "[year]-[month]-[day]");
 
@@ -141,10 +141,10 @@ pub struct Patient {
     pub patient_status: PatientStatus,
 
     /// The date when the patient record was created (optional).
-    #[serde_as(as = "Option<Iso8601>")]
+    #[serde_as(as = "Option<Rfc3339>")]
     pub created_date: Option<OffsetDateTime>,
     /// The date when the patient record was deleted (optional).
-    #[serde_as(as = "Option<Iso8601>")]
+    #[serde_as(as = "Option<Rfc3339>")]
     pub deleted_date: Option<OffsetDateTime>,
 }
 
@@ -155,7 +155,7 @@ pub struct Consent {
     /// Indicates whether the patient has consented.
     pub consented: bool,
     /// The last date when the consent was modified (optional).
-    #[serde_as(as = "Option<Iso8601>")]
+    #[serde_as(as = "Option<Rfc3339>")]
     pub last_modified_date: Option<OffsetDateTime>,
     /// The application associated with the consent (optional).
     pub application: Option<String>,

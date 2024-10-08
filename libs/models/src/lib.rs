@@ -14,4 +14,4 @@ pub mod scheduling;
 pub mod user_management;
 
 // Re-export common models if desired
-pub use patient_profile::patient::Patient;
+pub use patient_profile::Patient;

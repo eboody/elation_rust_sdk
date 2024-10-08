@@ -9,3 +9,13 @@ models = { path = "../models" }
 error = { path = "../error" }
 
 serde = { workspace = true }
+serde_with = { workspace = true }
+serde_json = { workspace = true }
+derive_more = { workspace = true }
+reqwest = { workspace = true }
+time = { workspace = true }
+
+
+[dev-dependencies]
+httpmock = "0.7"
+tokio = { version = "1", features = ["full"] }
