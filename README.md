@@ -6,6 +6,44 @@ This project is a Rust SDK for interacting with a medical API. It includes modul
 
 ---
 
+## Example Usage
+
+```rust
+use client::Client;
+use services::PatientService;
+use models::patient_profile::{PatientForCreate, Sex};
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    // Initialize the client
+    let client = Client::new().await?;
+
+    // Create a patient service instance
+    let patient_service = PatientService::new(&client);
+
+    // Create a new patient
+    let new_patient = PatientForCreate {
+        first_name: "Jane".to_string(),
+        last_name: "Doe".to_string(),
+        dob: time::Date::from_calendar_date(1990, time::Month::January, 1)?,
+        sex: Sex::Female,
+        primary_physician: 123,
+        caregiver_practice: 456,
+        address: None,
+        emails: None,
+        insurances: vec![],
+    };
+
+    let patient = patient_service.create_patient(&new_patient).await?;
+
+    println!("Created patient with ID: {}", patient.id);
+
+    Ok(())
+}
+```
+
+---
+
 ## Project Structure
 
 - `Cargo.toml` - Project manifest file, specifying dependencies and project metadata.
@@ -184,45 +222,6 @@ project-root/
 
 ```
 
----
-
-## Example Usage
-
-```rust
-use client::Client;
-use services::PatientService;
-use models::patient_profile::{PatientForCreate, Sex};
-
-#[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // Initialize the client
-    let client = Client::new().await?;
-
-    // Create a patient service instance
-    let patient_service = PatientService::new(&client);
-
-    // Create a new patient
-    let new_patient = PatientForCreate {
-        first_name: "Jane".to_string(),
-        last_name: "Doe".to_string(),
-        dob: time::Date::from_calendar_date(1990, time::Month::January, 1)?,
-        sex: Sex::Female,
-        primary_physician: 123,
-        caregiver_practice: 456,
-        address: None,
-        emails: None,
-        insurances: vec![],
-    };
-
-    let patient = patient_service.create_patient(&new_patient).await?;
-
-    println!("Created patient with ID: {}", patient.id);
-
-    Ok(())
-}
-```
-
----
 
 ## Key Dependencies
 
