@@ -1,0 +1,91 @@
+use serde::{Deserialize, Serialize};
+use serde_with::serde_as;
+use time::Date;
+
+/// Represents a diagnosis in a patient's problem list.
+///
+/// Each problem can be potentially coded with ICD9, ICD10, SNOMED, and IMO.
+/// `resolved_date` is set if status is "Resolved".
+#[serde_as]
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct Problem {
+    /// The ID of the problem.
+    pub id: i64,
+
+    /// The description of the problem.
+    pub description: String,
+
+    /// The status of the problem.
+    pub status: ProblemStatus,
+
+    /// The synopsis of the problem.
+    pub synopsis: Option<String>,
+
+    /// The date the problem started.
+    pub start_date: Date,
+
+    /// The date the problem was resolved (optional).
+    pub resolved_date: Option<Date>,
+
+    /// The diagnosis(es) for IMO codes.
+    pub dx: Vec<DxCode>,
+
+    /// The ID of the patient.
+    pub patient: i64,
+
+    /// The date the problem was created.
+    #[serde_as(as = "Option<serde_with::TimestampSecondsWithFrac>")]
+    pub created_date: Option<time::OffsetDateTime>,
+
+    /// The date the problem was deleted (optional).
+    #[serde_as(as = "Option<serde_with::TimestampSecondsWithFrac>")]
+    pub deleted_date: Option<time::OffsetDateTime>,
+}
+
+/// Represents the data required to create a new problem.
+#[serde_as]
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct ProblemForCreate {
+    /// The description of the problem.
+    pub description: String,
+
+    /// The status of the problem.
+    pub status: ProblemStatus,
+
+    /// The synopsis of the problem.
+    pub synopsis: Option<String>,
+
+    /// The date the problem started.
+    pub start_date: Date,
+
+    /// The date the problem was resolved (optional).
+    pub resolved_date: Option<Date>,
+
+    /// The diagnosis(es) for IMO codes.
+    pub dx: Vec<DxCode>,
+
+    /// The ID of the patient.
+    pub patient: i64,
+}
+
+/// Represents the status of a problem.
+#[derive(Clone, Debug, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+pub enum ProblemStatus {
+    Active,
+    Controlled,
+    Resolved,
+}
+
+/// Represents diagnosis codes for a problem.
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct DxCode {
+    /// The ICD9 codes of the diagnosis.
+    pub icd9: Option<Vec<String>>,
+
+    /// The ICD10 codes of the diagnosis.
+    pub icd10: Option<Vec<String>>,
+
+    /// The SNOMED code of the diagnosis.
+    pub snomed: Option<String>,
+}

@@ -75,11 +75,16 @@ async fn fetch_and_cache_token(
     println!("Got new token");
 
     let mut redis_conn = shared_state.redis_pool.get().await?;
+
+    // Explicitly specify the types for the `set` function
     redis_conn
         .set::<_, _, ()>("access_token", token.as_str())
         .await?;
-    redis_conn.expire("access_token", 3600).await?;
+
+    // Explicitly specify the types for the `expire` function
+    redis_conn.expire::<_, ()>("access_token", 3600).await?;
 
     *shared_state.token.write().await = token;
+
     Ok(())
 }

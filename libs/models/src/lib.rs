@@ -13,5 +13,7 @@ pub mod reference_data;
 pub mod scheduling;
 pub mod user_management;
 
+pub mod resource;
+
 // Re-export common models if desired
 pub use patient_profile::Patient;

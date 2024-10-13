@@ -17,6 +17,8 @@ time = { workspace = true }
 serial_test = { workspace = true }
 debug_deserialize = { path = "../debug_deserialize" }
 
+async-trait = "0.1"
+
 
 [dev-dependencies]
 httpmock = "0.7"

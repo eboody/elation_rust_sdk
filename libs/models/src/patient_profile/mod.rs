@@ -1,5 +1,6 @@
 pub mod allergy;
 mod patient;
-pub mod problem;
+mod problem;
 
 pub use patient::*;
+pub use problem::*;

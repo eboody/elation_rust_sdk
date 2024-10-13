@@ -3,6 +3,8 @@ use serde_with::serde_as;
 use time::{Date, OffsetDateTime};
 use utils::time::Rfc3339;
 
+use crate::resource::Resource;
+
 time::serde::format_description!(one_true_date, Date, "[year]-[month]-[day]");
 
 /// Represents a physical address with optional components.
@@ -474,25 +476,6 @@ pub struct PatientQueryParams {
     pub offset: Option<i32>,
 }
 
-// The implementation of Patient methods is omitted for brevity.
-// impl Patient {
-//     pub async fn get(elation_patient_id: i64) -> Result<Patient> {
-//         ...
-//     }
-//
-//     pub async fn create(patient_fc: &PatientForCreate) -> Result<Patient> {
-//         ...
-//     }
-//
-//     pub async fn delete(id: i64) -> Result<String> {
-//         ...
-//     }
-//
-//     pub async fn find(params: PatientQueryParams) -> Result<client::PaginatedResponse<Patient>> {
-//         ...
-//     }
-// }
-
 /// Represents the race of a patient.
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub enum Race {
@@ -622,4 +605,12 @@ pub enum SexualOrientation {
     Queer,
     /// Asexual.
     Asexual,
+}
+
+impl Resource for Patient {
+    type Id = i64;
+
+    fn endpoint() -> &'static str {
+        "/patients"
+    }
 }
