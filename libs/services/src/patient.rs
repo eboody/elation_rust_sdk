@@ -10,11 +10,17 @@ use models::patient_profile::{Patient, PatientForCreate, PatientForUpdate, Patie
 /// # Example
 ///
 /// ```rust
-/// let client = Client::new().await.unwrap();
-/// let service = PatientService::new(&client);
+/// use client::Client;
+/// use services::PatientService;
 ///
-/// let patient = service.get_patient(12345).await.unwrap();
-/// println!("Patient: {:#?}", patient);
+/// #[tokio::main]
+/// async fn main() {
+///     let client = Client::new().await.unwrap();
+///     let service = PatientService::new(&client);
+///
+///     let patient = service.get_patient(12345).await.unwrap();
+///     println!("Patient: {:#?}", patient);
+/// }
 /// ```
 pub struct PatientService<'a> {
     client: &'a Client,
@@ -100,6 +106,13 @@ impl<'a> PatientService<'a> {
     ///
     /// Returns an error if the request fails or if the update is unsuccessful.
     pub async fn update_patient(&self, patient_id: i64, patient: &PatientForUpdate) -> Result<i64> {
+        let endpoint = format!("/patients/{}/", patient_id);
+        let response = self.client.patch(&endpoint, patient).await?;
+        let updated_patient = response.json::<i64>().await?;
+        Ok(updated_patient)
+    }
+
+    pub async fn put_patient(&self, patient_id: i64, patient: &PatientForUpdate) -> Result<i64> {
         let endpoint = format!("/patients/{}/", patient_id);
         let response = self.client.put(&endpoint, patient).await?;
         let updated_patient = response.json::<i64>().await?;

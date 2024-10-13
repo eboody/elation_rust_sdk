@@ -1,56 +1,4 @@
-# [[📌 Project Todos]]:
 
-- [ ] Implemented the Client Module (libs/client/):
-
-Created the Client struct to handle HTTP requests and authentication.
-Implemented HTTP methods (get, post, put, delete) with proper error handling.
-Added support for query parameters by introducing the Params trait.
-Defined custom error handling in client::error.rs with an Error enum covering various HTTP and parsing errors.
-Developed Data Models (libs/models/):
-
-- [ ] Created data models for patients in patient_profile.rs.
-Defined structs like Patient, PatientForCreate, PatientQueryParams, etc.
-Implemented enums for categorical data (e.g., Sex, GenderIdentity, Race, Ethnicity).
-Used serde for serialization and deserialization, with custom date formats using the time crate.
-Ensured all models implement necessary traits like Serialize, Deserialize, and Default.
-Built the Services Module (libs/services/):
-
-- [ ] Implemented PatientService with methods to interact with the patient API endpoints:
-get_patient
-create_patient
-update_patient
-delete_patient
-find_patients
-Handled errors appropriately by wrapping client::Error in services::Error and adding service-specific error variants.
-Used the Params trait to handle query parameters in service methods.
-Wrote Unit Tests for PatientService:
-
-- [ ] Used httpmock to mock HTTP responses and simulate API interactions in tests.
-Covered success scenarios for all service methods.
-Tested error handling by simulating API errors like 404 Not Found.
-Ensured all tests pass successfully, verifying the correctness of service methods.
-Managed Error Handling Across Modules:
-
-- [ ] Avoided duplication of error definitions by reusing client::Error in the services crate.
-Wrapped client::Error in services::Error to propagate client errors while allowing for service-specific errors.
-Implemented error conversion and display logic to provide meaningful error messages.
-Enhanced the Client for Query Parameters:
-
-- [ ] Modified the Client struct to handle query parameters effectively.
-Added a generic get method that accepts parameters implementing the Params trait.
-Defined the Params trait requiring Serialize and Default implementations.
-Applied the Params trait to parameter structs like PatientQueryParams.
-Documented Code and Modules:
-
-- [ ] Added documentation comments (///) to all public structs, enums, methods, and functions.
-Provided examples where helpful to illustrate usage.
-Ensured code is well-documented for better maintainability and user understanding.
-Outlined the Project Structure:
-
-- [ ] Created a detailed markdown outline of the entire project.
-Included descriptions of each module and their key components.
-Provided a file and module hierarchy for visualization.
-Prepared the outline for use in note-taking apps like Obsidian.
 # Outline
 ## Overview
 
@@ -314,5 +262,128 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 - **Add Logging**: Incorporate logging for better observability.
 - **Publish the SDK**: Prepare for publishing on crates.io, including license and metadata.
 - **Gather Feedback**: Solicit feedback to improve the SDK.
+
+# [[📌 Project Todos]]:
+- [ ] **Implement Another Service (`ProblemService`):**
+  - [ ] **Define Data Models:**
+     - Create `problem.rs` in the `models` crate.
+     - Define structs such as `Problem`, `ProblemForCreate`, and any associated enums.
+     - Ensure all fields are properly annotated with `serde` attributes for serialization/deserialization.
+  - [ ] **Implement `ProblemService`:**
+     - Create `problem_service.rs` in the `services` crate.
+     - Implement methods for:
+       - `get_problem(problem_id: i- [ ]) -> Result<Problem, Error>`
+       - `create_problem(problem: &ProblemForCreate) -> Result<Problem, Error>`
+       - `update_problem(problem_id: i- [ ], problem: &Problem) -> Result<Problem, Error>`
+       - `delete_problem(problem_id: i- [ ]) -> Result<(), Error>`
+       - `list_problems(patient_id: i- [ ]) -> Result<Vec<Problem>, Error>`
+  - [ ] **Write Unit Tests:**
+     - Use `httpmock` to mock API responses.
+     - Write tests for each method, covering both success and error cases.
+- [ ] **Enhance Documentation:**
+  - [ ] **Add Documentation Comments:**
+     - Ensure all public structs, enums, methods, and functions have `///` comments.
+     - Describe the purpose, parameters, return values, and potential errors.
+  - [ ] **Include Examples:**
+     - Provide code examples in the documentation to illustrate how to use the services and methods.
+  - [ ] **Generate and Review Docs:**
+     - Run `cargo doc` to generate documentation.
+     - Review the generated docs for clarity and completeness.
+- [ ] **Set Up Continuous Integration (CI):**
+  - [ ] **Choose a CI Platform:**
+     - Use GitHub Actions, Travis CI, CircleCI, or another service.
+  - [ ] **Configure CI Workflow:**
+     - Automate running tests (`cargo test`) on every push or pull request.
+     - Include linting with `cargo clippy` and formatting checks with `cargo fmt`.
+  - [ ] **Badge and Status Updates:**
+     - Add a build status badge to your README.
+     - Configure notifications for build failures.
+- [ ] **Refine Error Handling:**
+  - [ ] **Review Error Variants:**
+     - Ensure all possible errors are covered in your `Error` enums.
+     - Provide meaningful error messages.
+  - [ ] **Implement Custom Errors if Needed:**
+     - For common or complex error scenarios, consider custom error types.
+  - [ ] **Update Error Documentation:**
+     - Document what errors can be returned by each method.
+- [ ] **Expand Test Coverage:**
+  - [ ] **Write Additional Tests:**
+     - Cover edge cases and less common scenarios.
+     - Test error handling paths.
+  - [ ] **Measure Coverage:**
+     - Use a tool like `cargo-tarpaulin` to measure code coverage.
+     - Aim for high coverage but focus on meaningful tests.
+- [ ] **Implement Logging:**
+  - [ ] **Integrate a Logging Crate:**
+     - Add `log` and `env_logger` to your dependencies.
+  - [ ] **Add Log Statements:**
+     - Insert logging at key points (e.g., starting a request, errors, retries).
+  - [ ] **Allow Log Configuration:**
+     - Provide options for users to set the logging level.
+- [ ] **Prepare for Publishing (if applicable):**
+  - [ ] **Update `Cargo.toml`:**
+     - Fill in metadata like `version`, `authors`, `description`, and `license`.
+  - [ ] **Write a `README.md`:**
+     - Describe the project, installation instructions, and basic usage examples.
+  - [ ] **Choose a License:**
+     - Decide on an open-source license (e.g., MIT, Apache - [ ]- [ ] and include a `LICENSE` file.
+  - [ ] **Create a Changelog:**
+     - Start documenting changes between versions in a `CHANGELOG.md` file.
+- [ ] **Plan Future Features:**
+  - [ ] **Review API Documentation:**
+     - Identify additional endpoints and features to implement next.
+  - [ ] **Prioritize Tasks:**
+     - Decide which features add the most value and plan their implementation.
+  - [ ] **Update Project Roadmap:**
+     - Outline upcoming milestones and goals.
+- [ ] **Gather Feedback:**
+  - [ ] **Code Review:**
+     - Have peers review your code for potential improvements.
+  - [ ] **User Testing:**
+     - If possible, get feedback from initial users or collaborators.
+- [x] Implemented the Client Module (libs/client/):
+	- Created the Client struct to handle HTTP requests and authentication.
+	- Implemented HTTP methods (get, post, put, delete) with proper error handling.
+	- Added support for query parameters by introducing the Params trait.
+	- Defined custom error handling in client::error.rs with an Error enum covering various HTTP and parsing errors.
+	- Developed Data Models (libs/models/):
+- [x] Created data models for patients in patient_profile.rs.
+	- Defined structs like Patient, PatientForCreate, PatientQueryParams, etc.
+	- Implemented enums for categorical data (e.g., Sex, GenderIdentity, Race, Ethnicity).
+	- Used serde for serialization and deserialization, with custom date formats using the time crate.
+	- Ensured all models implement necessary traits like Serialize, Deserialize, and Default.
+	- Built the Services Module (libs/services/):
+- [x] Implemented PatientService with methods to interact with the patient API endpoints:
+	- get_patient
+	- create_patient
+	- update_patient
+	- delete_patient
+	- find_patients
+	- Handled errors appropriately by wrapping client::Error in services::Error and adding service-specific error variants.
+	- Used the Params trait to handle query parameters in service methods.
+	- Wrote Unit Tests for PatientService:
+- [x] Used httpmock to mock HTTP responses and simulate API interactions in tests.
+	- Covered success scenarios for all service methods.
+	- Tested error handling by simulating API errors like 404 Not Found.
+	- Ensured all tests pass successfully, verifying the correctness of service methods.
+	- Managed Error Handling Across Modules:
+- [x] Avoided duplication of error definitions by reusing client::Error in the services crate.
+	- Wrapped client::Error in services::Error to propagate client errors while allowing for service-specific errors.
+	- Implemented error conversion and display logic to provide meaningful error messages.
+	- Enhanced the Client for Query Parameters:
+- [x] Modified the Client struct to handle query parameters effectively.
+	- Added a generic get method that accepts parameters implementing the Params trait.
+	- Defined the Params trait requiring Serialize and Default implementations.
+	- Applied the Params trait to parameter structs like PatientQueryParams.
+	- Documented Code and Modules:
+- [x] Added documentation comments (///) to all public structs, enums, methods, and functions.
+	- Provided examples where helpful to illustrate usage.
+	- Ensured code is well-documented for better maintainability and user understanding.
+	- Outlined the Project Structure:
+- [x] Created a detailed markdown outline of the entire project.
+	- Included descriptions of each module and their key components.
+	- Provided a file and module hierarchy for visualization.
+	- Prepared the outline for use in note-taking apps like Obsidian.
+
 
 # Notes

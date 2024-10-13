@@ -106,7 +106,7 @@ mod tests {
 
     #[serial]
     #[tokio::test]
-    async fn test_update_put_patient_success() {
+    async fn test_update_patch_patient_success() {
         // Start a local mock server
         let server = MockServer::start_async().await;
 
@@ -120,7 +120,7 @@ mod tests {
         let patient_id = 123456;
 
         let mock = server.mock(|when, then| {
-            when.method(httpmock::Method::PUT)
+            when.method(httpmock::Method::PATCH)
                 .path(format!("/patients/{}/", patient_id))
                 .header("Content-Type", "application/json")
                 .json_body_partial(
