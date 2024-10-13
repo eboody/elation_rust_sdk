@@ -2,7 +2,7 @@
 # Outline
 ## Overview
 
-This project is a Rust SDK for interacting with a medical API. It includes modules for handling clients, services, models, errors, and tests. The SDK is designed to be robust, type-safe, and easy to use.
+This project is a Rust SDK for interacting with the Elation EMR API. It includes modules for handling clients, services, models, errors, and tests. The SDK is designed to be robust, type-safe, and easy to use.
 
 ---
 
