@@ -112,6 +112,23 @@ impl<'a> PatientService<'a> {
         Ok(updated_patient)
     }
 
+    /// Fully replaces an existing patient.
+    ///
+    /// This method sends a request to replace an existing patient in the Elation API with the provided
+    /// patient data. The entire patient resource will be replaced, so all fields should be provided.
+    ///
+    /// # Arguments
+    ///
+    /// * `patient_id` - The unique ID of the patient to replace.
+    /// * `patient` - A reference to a `PatientForUpdate` struct containing the complete patient information.
+    ///
+    /// # Returns
+    ///
+    /// Returns a `Result` containing the ID of the replaced patient if successful, or an error if the request fails.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the request fails or if the replacement is unsuccessful.
     pub async fn put_patient(&self, patient_id: i64, patient: &PatientForUpdate) -> Result<i64> {
         let endpoint = format!("/patients/{}/", patient_id);
         let response = self.client.put(&endpoint, patient).await?;
