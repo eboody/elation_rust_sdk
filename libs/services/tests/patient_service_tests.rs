@@ -159,6 +159,59 @@ mod tests {
 
     #[serial]
     #[tokio::test]
+    async fn test_update_put_patient_success() {
+        // Start a local mock server
+        let server = MockServer::start_async().await;
+
+        // Set the mock env
+        std::env::set_var("TEST_ENV", "TRUE");
+        std::env::set_var("MOCK_SERVER_URL", server.base_url());
+
+        tokio::time::sleep(std::time::Duration::from_millis(500)).await;
+
+        // Mock the PUT /patients/{id}/ endpoint
+        let patient_id = 123456;
+
+        let mock = server.mock(|when, then| {
+            when.method(httpmock::Method::PUT)
+                .path(format!("/patients/{}/", patient_id))
+                .header("Content-Type", "application/json")
+                .json_body_partial(
+                    r#"{
+                        "first_name": "Johnny"
+                    }"#,
+                );
+            then.status(200)
+                .header("Content-Type", "application/json")
+                .body(patient_id.to_string());
+        });
+
+        // Create a client pointing to the mock server
+        let client = Client::new().await.unwrap();
+        let service = PatientService::new(&client);
+
+        let patient_fu = PatientForUpdate {
+            first_name: Some("Johnny".to_owned()),
+            ..PatientForUpdate::default()
+        };
+
+        // Call the method under test
+        let result = service.put_patient(patient_id, &patient_fu).await;
+
+        println!("result: {result:#?}");
+
+        // Assert the result
+        assert!(result.is_ok());
+        let patient = result.unwrap();
+        assert_eq!(patient, patient_id);
+        //assert_eq!(patient.first_name, "John");
+
+        // Ensure the mock was called
+        mock.assert_async().await;
+    }
+
+    #[serial]
+    #[tokio::test]
     async fn test_delete_patient_success() {
         // Start a local mock server
         let server = MockServer::start_async().await;
