@@ -9,9 +9,9 @@ members = [
     "libs/utils",
     "libs/error",
     "libs/config", 
-    "libs/sdk",
-    "token-service"
-]
+    "libs/sdk"
+    , "token-service"
+    , "libs/debug_deserialize"]
 
 [workspace.dependencies]
 utils = { path = "./libs/utils" }
@@ -25,3 +25,5 @@ reqwest = "0.12"
 time = { version = "0.3", features = ["formatting", "parsing", "serde", "macros", "serde-well-known"] }
 derive_more = {version = "1", features = ["from", "display"] }
 log = "^0.4"
+
+serial_test = "^3"

@@ -32,31 +32,6 @@ impl<T: Serialize + Default + Debug> Params for T {}
 ///
 /// * `T` - The type of the items contained in the `results` list.
 ///
-/// # Example
-///
-/// ```rust
-/// use serde::Deserialize;
-/// use serde_with::serde_as;
-/// use your_crate::PaginatedResponse;
-///
-/// #[derive(Debug, Deserialize)]
-/// struct Patient {
-///     // Patient fields...
-/// }
-///
-/// async fn fetch_patients(client: &Client) -> Result<()> {
-///     let response = client.get("/patients/").await?;
-///     let paginated_response: PaginatedResponse<Patient> = response.json().await?;
-///
-///     println!("Total patients: {}", paginated_response.count);
-///     for patient in paginated_response.results {
-///         println!("Patient ID: {}", patient.id);
-///         // Process patient...
-///     }
-///
-///     Ok(())
-/// }
-/// ```
 #[serde_as]
 #[derive(Debug, Deserialize)]
 pub struct PaginatedResponse<T> {
@@ -234,21 +209,11 @@ impl Client {
     ///
     /// * `P` - A type that implements the `Params` trait (i.e., `Serialize` and `Default`).
     ///
-    /// # Example
-    ///
-    /// ```rust
-    /// let params = PatientQueryParams {
-    ///     first_name: Some("John".to_string()),
-    ///     ..Default::default()
-    /// };
-    /// let response = client.get("/patients/", params).await?;
-    /// ```
-    ///
     /// # Errors
     ///
     /// Returns an error if the request fails.
     pub async fn get<P: Params>(&self, endpoint: &str, params: P) -> Result<Response> {
-        self.send_request(HttpMethod::GET, endpoint, Some(&params))
+        self.send_request(HttpMethod::GET, endpoint, None::<&()>, Some(&params))
             .await
     }
 
@@ -271,7 +236,7 @@ impl Client {
         endpoint: &str,
         body: &T,
     ) -> Result<Response> {
-        self.send_request(HttpMethod::POST, endpoint, Some(body))
+        self.send_request(HttpMethod::POST, endpoint, Some(body), None::<&()>)
             .await
     }
 
@@ -285,10 +250,11 @@ impl Client {
     /// # Errors
     ///
     /// Returns an error if the request fails.
-    pub async fn delete(&self, endpoint: &str, id: String) -> Result<Response> {
+    pub async fn delete(&self, endpoint: &str) -> Result<Response> {
         self.send_request(
             HttpMethod::DELETE,
-            &format!("{}/{}", endpoint, id),
+            &format!("{}", endpoint),
+            None::<&()>,
             None::<&()>,
         )
         .await
@@ -313,7 +279,7 @@ impl Client {
         endpoint: &str,
         body: &T,
     ) -> Result<Response> {
-        self.send_request(HttpMethod::PUT, endpoint, Some(body))
+        self.send_request(HttpMethod::PUT, endpoint, Some(body), None::<&()>)
             .await
     }
 
@@ -336,7 +302,7 @@ impl Client {
         endpoint: &str,
         body: &T,
     ) -> Result<Response> {
-        self.send_request(HttpMethod::PATCH, endpoint, Some(body))
+        self.send_request(HttpMethod::PATCH, endpoint, Some(body), None::<&()>)
             .await
     }
 
@@ -359,14 +325,16 @@ impl Client {
     /// # Errors
     ///
     /// Returns an error if the request fails or if an error occurs while processing the response.
-    async fn send_request<T>(
+    async fn send_request<T, P>(
         &self,
         method: HttpMethod,
         endpoint: &str,
         body: Option<&T>,
+        params: Option<&P>,
     ) -> Result<Response>
     where
         T: Serialize + Sized + Debug,
+        P: Params,
     {
         // Check if we are in a testing environment
         let base_url = if std::env::var("TEST_ENV").is_ok() {
@@ -380,10 +348,15 @@ impl Client {
             Url::parse(&elation_config().ELATION_API_URL)?
         };
 
-        let url = base_url.join(endpoint)?;
+        let mut url = base_url.join(endpoint)?;
 
         let mut request_builder = match method {
-            HttpMethod::GET => self.client.get(url),
+            HttpMethod::GET => {
+                let query = serde_urlencoded::to_string(&params)?;
+                url.set_query(Some(&query));
+
+                self.client.get(url)
+            }
             HttpMethod::DELETE => self.client.delete(url),
             HttpMethod::POST => self.client.post(url),
             HttpMethod::PUT => self.client.put(url),

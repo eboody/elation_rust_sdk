@@ -15,7 +15,7 @@ use utils::envs::get_env;
 /// # Example
 ///
 /// ```rust
-/// let config = elation_config();
+/// let config = client::elation_config();
 /// println!("API URL: {}", config.ELATION_API_URL);
 /// ```
 pub fn elation_config() -> &'static ElationConfig {
@@ -41,7 +41,7 @@ pub fn elation_config() -> &'static ElationConfig {
 /// # Example
 ///
 /// ```rust
-/// let config = elation_config();
+/// let config = client::elation_config();
 /// println!("API URL: {}", config.ELATION_API_URL);
 /// println!("Token Service URL: {}", config.TOKEN_SERVICE_URL);
 /// ```
@@ -76,10 +76,10 @@ impl ElationConfig {
     /// // export ELATION_API_URL="https://api.elationemr.com"
     /// // export TOKEN_SERVICE_URL="https://token.elationemr.com"
     ///
-    /// let config = ElationConfig::load_from_env()?;
+    /// let config = client::ElationConfig::load_from_env().unwrap();
     /// println!("API URL: {}", config.ELATION_API_URL);
     /// ```
-    fn load_from_env() -> utils::envs::Result<ElationConfig> {
+    pub fn load_from_env() -> utils::envs::Result<ElationConfig> {
         Ok(ElationConfig {
             ELATION_API_URL: get_env("ELATION_API_URL")?,
             TOKEN_SERVICE_URL: get_env("TOKEN_SERVICE_URL")?,

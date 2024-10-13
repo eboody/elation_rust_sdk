@@ -9,16 +9,6 @@ use serde_with::{serde_as, DisplayFromStr};
 /// This is defined as a convenience so that you don't have to write out
 /// `core::result::Result<T, Error>` every time.
 ///
-/// # Example
-///
-/// ```
-/// use your_crate::Result;
-///
-/// fn your_function() -> Result<()> {
-///     // Your code here...
-///     Ok(())
-/// }
-/// ```
 pub type Result<T> = core::result::Result<T, Error>;
 
 /// The error type for the SDK.
@@ -47,6 +37,9 @@ pub enum Error {
     /// This variant wraps `url::ParseError`, which can occur when constructing URLs.
     #[from]
     ParseUrl(#[serde_as(as = "DisplayFromStr")] url::ParseError),
+
+    #[from]
+    QueryString(#[serde_as(as = "DisplayFromStr")] serde_urlencoded::ser::Error),
 
     /// Indicates that a required request body was missing.
     ///
@@ -125,7 +118,7 @@ impl core::fmt::Display for Error {
     /// # Example
     ///
     /// ```
-    /// use your_crate::Error;
+    /// use client::Error;
     ///
     /// let error = Error::NotFound("Resource not found".into());
     /// println!("{}", error);
@@ -146,7 +139,7 @@ impl From<ParseFloatError> for Error {
     /// # Example
     ///
     /// ```
-    /// use your_crate::Error;
+    /// use client::Error;
     /// use std::num::ParseFloatError;
     ///
     /// fn parse_value(s: &str) -> Result<f64, Error> {

@@ -350,6 +350,91 @@ pub struct PatientForCreate {
     pub insurances: Vec<Insurance>,
 }
 
+/// Represents the data required to create a new patient.
+#[serde_as]
+#[derive(Clone, Debug, Serialize, Deserialize, Default)]
+pub struct PatientForUpdate {
+    /// The first name of the patient.
+    pub first_name: Option<String>,
+    /// The middle name of the patient (optional).
+    pub middle_name: Option<String>,
+    /// The last name of the patient.
+    pub last_name: Option<String>,
+    /// The actual name of the patient (optional).
+    pub actual_name: Option<String>,
+    /// The gender identity of the patient (optional).
+    pub gender_identity: Option<GenderIdentity>,
+    /// The legal gender marker of the patient (optional).
+    pub legal_gender_marker: Option<LegalGenderMarker>,
+    /// The pronouns used by the patient (optional).
+    pub pronouns: Option<Pronouns>,
+    /// The biological sex of the patient.
+    pub sex: Option<Sex>,
+    /// The sexual orientation of the patient (optional).
+    pub sexual_orientation: Option<SexualOrientation>,
+
+    /// The ID of the primary physician associated with the patient.
+    pub primary_physician: Option<i64>,
+    /// The ID of the caregiver practice associated with the patient.
+    pub caregiver_practice: Option<i64>,
+
+    /// The date of birth of the patient.
+    #[serde(with = "one_true_date::option")]
+    pub dob: Option<Date>,
+    /// The Social Security Number of the patient (optional).
+    pub ssn: Option<String>,
+    /// The race of the patient (optional).
+    pub race: Option<Race>,
+    /// The ethnicity of the patient (optional).
+    pub ethnicity: Option<Ethnicity>,
+    /// The preferred language of the patient (optional).
+    pub preferred_language: Option<String>,
+    /// Additional notes about the patient (optional).
+    pub notes: Option<String>,
+    /// Indicates whether the patient is marked as VIP.
+    pub vip: Option<bool>,
+    /// A list of tags associated with the patient.
+    pub tags: Option<Vec<String>>,
+    /// The SMS opt-in status of the patient (optional).
+    pub sms_opt_in_status: Option<bool>,
+    /// The address of the patient (optional).
+    pub address: Option<Address>,
+    /// A list of phone numbers for the patient (optional).
+    pub phones: Option<Vec<Phone>>,
+    /// A list of email addresses for the patient (optional).
+    pub emails: Option<Vec<Email>>,
+    /// The guarantor information for the patient (optional).
+    pub guarantor: Option<Guarantor>,
+    /// A list of insurance policies for the patient (optional).
+    pub insurances: Option<Vec<Insurance>>,
+    /// A list of deleted insurance policies for the patient (optional).
+    pub deleted_insurances: Option<Vec<Insurance>>,
+    /// The patient's preferences (optional).
+    pub preference: Option<Preference>,
+    /// The emergency contact information for the patient (optional).
+    pub emergency_contact: Option<EmergencyContact>,
+    /// The previous name(s) of the patient (optional).
+    pub previous_name: Option<PreviousName>,
+    /// The master patient ID associated with the patient (optional).
+    pub master_patient: Option<i64>,
+    /// The employer information of the patient (optional).
+    pub employer: Option<Employer>,
+    /// A list of consents given by the patient (optional).
+    pub consents: Option<Vec<Consent>>,
+    /// Additional metadata for the patient (optional).
+    pub metadata: Option<serde_json::Value>,
+    /// The ID of the chart into which the patient was merged (optional).
+    pub merged_into_chart: Option<i64>,
+
+    /// The primary care provider's ID for the patient (optional).
+    pub primary_care_provider: Option<i64>,
+    /// The National Provider Identifier (NPI) of the primary care provider (optional).
+    pub primary_care_provider_npi: Option<String>,
+
+    /// The status information of the patient.
+    pub patient_status: Option<PatientStatus>,
+}
+
 /// Represents query parameters for searching patients.
 #[serde_as]
 #[derive(Clone, Debug, Default, Serialize, Deserialize)]
