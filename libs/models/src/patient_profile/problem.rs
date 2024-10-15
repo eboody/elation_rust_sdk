@@ -2,6 +2,8 @@ use serde::{Deserialize, Serialize};
 use serde_with::serde_as;
 use time::Date;
 
+use crate::resource::Resource;
+
 /// Represents a diagnosis in a patient's problem list.
 ///
 /// Each problem can be potentially coded with ICD9, ICD10, SNOMED, and IMO.
@@ -91,7 +93,7 @@ pub struct DxCode {
 }
 
 /// Represents a problem update request for the Elation API.
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Default)]
 pub struct ProblemForUpdate {
     /// The status of the problem.
     pub status: Option<String>,
@@ -120,4 +122,12 @@ pub struct ProblemForUpdate {
 pub struct Icd10Code {
     /// The ICD-10 code.
     pub code: String,
+}
+
+impl Resource for Problem {
+    type Id = i64;
+
+    fn endpoint() -> &'static str {
+        "/problems"
+    }
 }
