@@ -96,14 +96,12 @@ fn find_problematic_field(json: &str, target_column: usize) -> Option<(String, S
         }
         if in_quotes {
             escaped = !escaped && ch == '\\';
-        } else {
-            if ch == ':' {
-                current_field = json[field_start..i]
-                    .trim_matches(|c: char| c == '"' || c.is_whitespace())
-                    .to_string();
-            } else if ch == ',' {
-                field_start = i + 1;
-            }
+        } else if ch == ':' {
+            current_field = json[field_start..i]
+                .trim_matches(|c: char| c == '"' || c.is_whitespace())
+                .to_string();
+        } else if ch == ',' {
+            field_start = i + 1;
         }
     }
     None

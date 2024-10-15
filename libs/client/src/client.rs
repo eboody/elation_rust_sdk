@@ -11,7 +11,8 @@ use tokio_retry::{strategy::ExponentialBackoff, Retry};
 use url::Url;
 
 use serde::{de::DeserializeOwned, Deserialize, Serialize};
-use strum_macros::{Display, EnumString};
+
+use reqwest::Method;
 
 pub use crate::{Error, Result};
 
@@ -106,18 +107,18 @@ pub struct Client {
     client: reqwest::Client,
 }
 
-/// Enum representing the supported HTTP methods.
-///
-/// `HttpMethod` is used internally by the `Client` to determine
-/// which HTTP method to use for a given request.
-#[derive(Serialize, EnumString, Display)]
-enum HttpMethod {
-    GET,
-    POST,
-    PUT,
-    PATCH,
-    DELETE,
-}
+///// Enum representing the supported HTTP methods.
+/////
+///// `HttpMethod` is used internally by the `Client` to determine
+///// which HTTP method to use for a given request.
+//#[derive(Serialize, EnumString, Display)]
+//enum HttpMethod {
+//    GET,
+//    POST,
+//    PUT,
+//    PATCH,
+//    DELETE,
+//}
 
 impl Client {
     /// Creates a new instance of `Client`.
@@ -213,7 +214,7 @@ impl Client {
     ///
     /// Returns an error if the request fails.
     pub async fn get<P: Params>(&self, endpoint: &str, params: P) -> Result<Response> {
-        self.send_request(HttpMethod::GET, endpoint, None::<&()>, Some(&params))
+        self.send_request(Method::GET, endpoint, None::<&()>, Some(&params))
             .await
     }
 
@@ -236,7 +237,7 @@ impl Client {
         endpoint: &str,
         body: &T,
     ) -> Result<Response> {
-        self.send_request(HttpMethod::POST, endpoint, Some(body), None::<&()>)
+        self.send_request(Method::POST, endpoint, Some(body), None::<&()>)
             .await
     }
 
@@ -251,13 +252,8 @@ impl Client {
     ///
     /// Returns an error if the request fails.
     pub async fn delete(&self, endpoint: &str) -> Result<Response> {
-        self.send_request(
-            HttpMethod::DELETE,
-            &format!("{}", endpoint),
-            None::<&()>,
-            None::<&()>,
-        )
-        .await
+        self.send_request(Method::DELETE, endpoint, None::<&()>, None::<&()>)
+            .await
     }
 
     /// Sends a PUT request to the specified endpoint with the provided body.
@@ -279,7 +275,7 @@ impl Client {
         endpoint: &str,
         body: &T,
     ) -> Result<Response> {
-        self.send_request(HttpMethod::PUT, endpoint, Some(body), None::<&()>)
+        self.send_request(Method::PUT, endpoint, Some(body), None::<&()>)
             .await
     }
 
@@ -302,7 +298,7 @@ impl Client {
         endpoint: &str,
         body: &T,
     ) -> Result<Response> {
-        self.send_request(HttpMethod::PATCH, endpoint, Some(body), None::<&()>)
+        self.send_request(Method::PATCH, endpoint, Some(body), None::<&()>)
             .await
     }
 
@@ -327,7 +323,7 @@ impl Client {
     /// Returns an error if the request fails or if an error occurs while processing the response.
     async fn send_request<T, P>(
         &self,
-        method: HttpMethod,
+        method: Method,
         endpoint: &str,
         body: Option<&T>,
         params: Option<&P>,
@@ -351,16 +347,17 @@ impl Client {
         let mut url = base_url.join(endpoint)?;
 
         let mut request_builder = match method {
-            HttpMethod::GET => {
-                let query = serde_urlencoded::to_string(&params)?;
+            Method::GET => {
+                let query = serde_urlencoded::to_string(params)?;
                 url.set_query(Some(&query));
 
                 self.client.get(url)
             }
-            HttpMethod::DELETE => self.client.delete(url),
-            HttpMethod::POST => self.client.post(url),
-            HttpMethod::PUT => self.client.put(url),
-            HttpMethod::PATCH => self.client.patch(url),
+            Method::DELETE => self.client.delete(url),
+            Method::POST => self.client.post(url),
+            Method::PUT => self.client.put(url),
+            Method::PATCH => self.client.patch(url),
+            _ => return Err(Error::NotFound("Method not available".to_owned())),
         };
 
         if let Some(body) = body {
@@ -487,142 +484,3 @@ impl Client {
         Ok(results)
     }
 }
-
-//#[cfg(test)]
-//mod tests {
-//    use super::*;
-//    use serde_json::json;
-//
-//    // Import the necessary dependencies
-//    use tokio;
-//
-//    // Helper function to initialize the client
-//    async fn init_client() -> Result<Client> {
-//        Client::new().await
-//    }
-//
-//    // Test the GET method
-//    #[tokio::test]
-//    async fn test_get_request() -> Result<()> {
-//        let client = init_client().await?;
-//        let endpoint = "/your/get/endpoint"; // Replace with a valid endpoint
-//
-//        let response = client.get(endpoint, ()).await?;
-//        assert!(response.status().is_success(), "GET request failed");
-//
-//        let json: serde_json::Value = response.json().await?;
-//        println!("GET Response: {:#?}", json);
-//
-//        // Add assertions based on expected response
-//        // assert_eq!(json["key"], "expected_value");
-//
-//        Ok(())
-//    }
-//
-//    // Test the POST method
-//    #[tokio::test]
-//    async fn test_post_request() -> Result<()> {
-//        let client = init_client().await?;
-//        let endpoint = "/your/post/endpoint"; // Replace with a valid endpoint
-//
-//        // Construct the body as per the API requirements
-//        let body = json!({
-//            "key": "value",
-//            // Add other necessary fields
-//        });
-//
-//        let response = client.post(endpoint, &body).await?;
-//        assert!(response.status().is_success(), "POST request failed");
-//
-//        let json: serde_json::Value = response.json().await?;
-//        println!("POST Response: {:#?}", json);
-//
-//        // Add assertions based on expected response
-//        // assert_eq!(json["key"], "expected_value");
-//
-//        Ok(())
-//    }
-//
-//    // Test the PUT method
-//    #[tokio::test]
-//    async fn test_put_request() -> Result<()> {
-//        let client = init_client().await?;
-//        let endpoint = "/your/put/endpoint"; // Replace with a valid endpoint
-//
-//        // Construct the body as per the API requirements
-//        let body = json!({
-//            "key": "new_value",
-//            // Add other necessary fields
-//        });
-//
-//        let response = client.put(endpoint, &body).await?;
-//        assert!(response.status().is_success(), "PUT request failed");
-//
-//        let json: serde_json::Value = response.json().await?;
-//        println!("PUT Response: {:#?}", json);
-//
-//        // Add assertions based on expected response
-//
-//        Ok(())
-//    }
-//
-//    // Test the PATCH method
-//    #[tokio::test]
-//    async fn test_patch_request() -> Result<()> {
-//        let client = init_client().await?;
-//        let endpoint = "/your/patch/endpoint"; // Replace with a valid endpoint
-//
-//        // Construct the body as per the API requirements
-//        let body = json!({
-//            "key": "patched_value",
-//            // Add other necessary fields
-//        });
-//
-//        let response = client.patch(endpoint, &body).await?;
-//        assert!(response.status().is_success(), "PATCH request failed");
-//
-//        let json: serde_json::Value = response.json().await?;
-//        println!("PATCH Response: {:#?}", json);
-//
-//        // Add assertions based on expected response
-//
-//        Ok(())
-//    }
-//
-//    // Test the DELETE method
-//    #[tokio::test]
-//    async fn test_delete_request() -> Result<()> {
-//        let client = init_client().await?;
-//        let endpoint = "/your/delete/endpoint"; // Replace with a valid endpoint
-//        let id = "resource_id"; // Replace with a valid resource ID
-//
-//        let response = client.delete(endpoint, id.to_string()).await?;
-//        assert!(response.status().is_success(), "DELETE request failed");
-//
-//        println!("DELETE Response Status: {:?}", response.status());
-//
-//        // Optionally, verify that the resource is actually deleted
-//
-//        Ok(())
-//    }
-//
-//    // Test obtaining an access token
-//    #[tokio::test]
-//    async fn test_get_access_token() -> Result<()> {
-//        let access_token = Client::get_access_token().await?;
-//        assert!(!access_token.is_empty(), "Access token is empty");
-//
-//        println!("Access Token: {}", access_token);
-//
-//        Ok(())
-//    }
-//
-//    //// Test client initialization
-//    //#[tokio::test]
-//    //async fn test_client_initialization() -> Result<()> {
-//    //    let client = init_client().await?;
-//    //    // You can perform additional checks on the client if necessary
-//    //
-//    //    Ok(())
-//    //}
-//}

@@ -53,7 +53,7 @@ where
 
     async fn create(&self, resource: &C) -> Result<T, Error> {
         let endpoint = T::endpoint();
-        let response = self.client.post(&endpoint, resource).await?;
+        let response = self.client.post(endpoint, resource).await?;
         let created_resource = response.json::<T>().await?;
         Ok(created_resource)
     }

@@ -61,7 +61,7 @@ impl fmt::Display for Error {
     fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Error::InvalidInput(msg) => write!(fmt, "Invalid input: {}", msg),
-            Error::ClientError(e) => write!(fmt, "{}", e.to_string()),
+            Error::ClientError(e) => write!(fmt, "{}", e),
         }
     }
 }

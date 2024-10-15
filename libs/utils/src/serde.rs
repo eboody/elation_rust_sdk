@@ -17,7 +17,7 @@ where
     }
 }
 
-pub fn serialize_vec_to_strings<T, S>(value: &Vec<T>, serializer: S) -> Result<S::Ok, S::Error>
+pub fn serialize_vec_to_strings<T, S>(value: &[T], serializer: S) -> Result<S::Ok, S::Error>
 where
     T: Display,
     S: Serializer,
