@@ -22,6 +22,8 @@ where
 
     async fn update(&self, id: Self::Id, resource: &U) -> Result<T, Error>;
 
+    async fn put(&self, id: Self::Id, resource: &U) -> Result<T, Error>;
+
     async fn delete(&self, id: Self::Id) -> Result<(), Error>;
 
     async fn list<P>(&self, params: P) -> Result<PaginatedResponse<T>, Error>

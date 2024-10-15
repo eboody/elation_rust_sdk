@@ -60,6 +60,13 @@ where
 
     async fn update(&self, id: Self::Id, resource: &U) -> Result<T, Error> {
         let endpoint = format!("{}/{}/", T::endpoint(), id.to_string());
+        let response = self.client.patch(&endpoint, resource).await?;
+        let updated_resource = response.json::<T>().await?;
+        Ok(updated_resource)
+    }
+
+    async fn put(&self, id: Self::Id, resource: &U) -> Result<T, Error> {
+        let endpoint = format!("{}/{}/", T::endpoint(), id.to_string());
         let response = self.client.put(&endpoint, resource).await?;
         let updated_resource = response.json::<T>().await?;
         Ok(updated_resource)
@@ -75,7 +82,7 @@ where
     where
         P: Params + Send + Sync,
     {
-        let endpoint = T::endpoint();
+        let endpoint = format!("{}/", T::endpoint());
         let response = self.client.get(&endpoint, params).await?;
         let paginated_response = response.json::<PaginatedResponse<T>>().await?;
         Ok(paginated_response)
