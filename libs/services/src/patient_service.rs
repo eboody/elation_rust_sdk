@@ -1,7 +1,7 @@
 use crate::base_service::BaseService;
-use models::patient_profile::{Patient, PatientForCreate};
+use models::patient_profile::{Patient, PatientForCreate, PatientForUpdate};
 
-pub type PatientService<'a> = BaseService<'a, Patient, PatientForCreate>;
+pub type PatientService<'a> = BaseService<'a, Patient, PatientForCreate, PatientForUpdate>;
 
 //use super::Result;
 //use client::{Client, PaginatedResponse};

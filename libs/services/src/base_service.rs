@@ -6,19 +6,21 @@ use models::resource::Resource;
 use serde::de::DeserializeOwned;
 use serde::Serialize;
 
-pub struct BaseService<'a, T, C>
+pub struct BaseService<'a, T, C, U>
 where
     T: Resource + Serialize + DeserializeOwned + Send + Sync,
     C: Serialize + Send + Sync,
+    U: Serialize + Send + Sync,
 {
     client: &'a Client,
-    _marker: std::marker::PhantomData<(T, C)>,
+    _marker: std::marker::PhantomData<(T, C, U)>,
 }
 
-impl<'a, T, C> BaseService<'a, T, C>
+impl<'a, T, C, U> BaseService<'a, T, C, U>
 where
     T: Resource + Serialize + DeserializeOwned + Send + Sync,
     C: Serialize + Send + Sync,
+    U: Serialize + Send + Sync,
 {
     pub fn new(client: &'a Client) -> Self {
         Self {
@@ -29,10 +31,11 @@ where
 }
 
 #[async_trait]
-impl<'a, T, C> ResourceService<'a, T, C> for BaseService<'a, T, C>
+impl<'a, T, C, U> ResourceService<'a, T, C, U> for BaseService<'a, T, C, U>
 where
     T: Resource + Serialize + DeserializeOwned + Send + Sync,
     C: Serialize + Send + Sync + std::fmt::Debug,
+    U: Serialize + Send + Sync + std::fmt::Debug,
     T::Id: ToString + Send + Sync,
 {
     type Id = T::Id;
@@ -42,7 +45,7 @@ where
     }
 
     async fn get(&self, id: Self::Id) -> Result<T, Error> {
-        let endpoint = format!("{}{}/", T::endpoint(), id.to_string());
+        let endpoint = format!("{}/{}/", T::endpoint(), id.to_string());
         let response = self.client.get(&endpoint, ()).await?;
         let resource = response.json::<T>().await?;
         Ok(resource)
@@ -55,15 +58,15 @@ where
         Ok(created_resource)
     }
 
-    async fn update(&self, id: Self::Id, resource: &C) -> Result<T, Error> {
-        let endpoint = format!("{}{}/", T::endpoint(), id.to_string());
+    async fn update(&self, id: Self::Id, resource: &U) -> Result<T, Error> {
+        let endpoint = format!("{}/{}/", T::endpoint(), id.to_string());
         let response = self.client.put(&endpoint, resource).await?;
         let updated_resource = response.json::<T>().await?;
         Ok(updated_resource)
     }
 
     async fn delete(&self, id: Self::Id) -> Result<(), Error> {
-        let endpoint = format!("{}{}/", T::endpoint(), id.to_string());
+        let endpoint = format!("{}/{}/", T::endpoint(), id.to_string());
         self.client.delete(&endpoint).await?;
         Ok(())
     }

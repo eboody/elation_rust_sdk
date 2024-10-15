@@ -89,3 +89,35 @@ pub struct DxCode {
     /// The SNOMED code of the diagnosis.
     pub snomed: Option<String>,
 }
+
+/// Represents a problem update request for the Elation API.
+#[derive(Debug, Serialize, Deserialize)]
+pub struct ProblemForUpdate {
+    /// The status of the problem.
+    pub status: Option<String>,
+
+    /// A list of diagnosed objects for the problem.
+    pub dx: Option<Vec<DxCode>>,
+
+    /// The problem description.
+    pub description: Option<String>,
+
+    /// The rank or count of the problem.
+    pub rank: Option<i32>,
+
+    /// The date the problem was resolved.
+    pub resolved_date: Option<Date>,
+
+    /// A synopsis or details about the problem.
+    pub synopsis: Option<String>,
+
+    /// The date the problem started.
+    pub start_date: Option<Date>,
+}
+
+/// Represents an ICD-10 code object.
+#[derive(Debug, Serialize, Deserialize)]
+pub struct Icd10Code {
+    /// The ICD-10 code.
+    pub code: String,
+}

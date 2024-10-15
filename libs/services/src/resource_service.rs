@@ -6,10 +6,11 @@ use serde::de::DeserializeOwned;
 use serde::Serialize;
 
 #[async_trait]
-pub trait ResourceService<'a, T, C>
+pub trait ResourceService<'a, T, C, U>
 where
     T: Resource + Serialize + DeserializeOwned + Send + Sync,
     C: Serialize + Send + Sync,
+    U: Serialize + Send + Sync,
 {
     type Id: ToString + Send + Sync;
 
@@ -19,7 +20,7 @@ where
 
     async fn create(&self, resource: &C) -> Result<T, Error>;
 
-    async fn update(&self, id: Self::Id, resource: &C) -> Result<T, Error>;
+    async fn update(&self, id: Self::Id, resource: &U) -> Result<T, Error>;
 
     async fn delete(&self, id: Self::Id) -> Result<(), Error>;
 
