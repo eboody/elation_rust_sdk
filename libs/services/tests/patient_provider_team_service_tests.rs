@@ -8,6 +8,7 @@ mod tests {
         PatientProviderTeamMember, PatientProviderTeamMemberForCreate,
         PatientProviderTeamMemberForUpdate,
     };
+    use patient_profile::PatientProviderTeamService;
     use serial_test::serial;
     use services::*;
     use time::OffsetDateTime;

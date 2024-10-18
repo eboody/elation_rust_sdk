@@ -6,6 +6,8 @@ mod tests {
     use models::patient_profile::{
         AllergyDocumentation, AllergyDocumentationForCreate, AllergyDocumentationForUpdate,
     };
+    use patient_profile::AllergyDocumentationService;
+    use resource_service::*;
     use serial_test::serial;
     use services::*;
     use time::OffsetDateTime;

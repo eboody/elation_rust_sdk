@@ -6,6 +6,7 @@ mod tests {
     use models::patient_profile::{
         Immunization, ImmunizationForCreate, ImmunizationForUpdate, Vaccine, VaccineForCreate,
     };
+    use patient_profile::ImmunizationService;
     use serial_test::serial;
     use services::*;
     use time::OffsetDateTime;

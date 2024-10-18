@@ -4,6 +4,8 @@ mod tests {
     use httpmock::Method::{DELETE, GET, PATCH, POST};
     use httpmock::MockServer;
     use models::patient_profile::{History, HistoryForCreate, HistoryForUpdate, HistoryType};
+    use patient_profile::HistoryService;
+    use resource_service::GetService;
     use serial_test::serial;
     use services::*;
     use time::OffsetDateTime;

@@ -5,7 +5,7 @@ mod tests {
     use httpmock::MockServer;
     use models::patient_profile::{Vaccine, VaccineForCreate, VaccineForUpdate};
     use serial_test::serial;
-    use services::*;
+    use services::{patient_profile::VaccineService, ResourceService};
     use time::OffsetDateTime;
 
     fn get_mock_vaccine(vaccine_id: i64) -> Vaccine {

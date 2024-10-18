@@ -25,3 +25,5 @@ pub use patient_photo::*;
 pub use patient_provider_team::*;
 pub use problem::*;
 pub use vaccine::*;
+
+pub mod utils;

@@ -6,6 +6,8 @@ mod tests {
     use models::patient_profile::{
         DrugIntolerance, DrugIntoleranceForCreate, DrugIntoleranceForUpdate,
     };
+    use patient_profile::DrugIntoleranceService;
+    use resource_service::*;
     use serial_test::serial;
     use services::*;
     use time::{Date, OffsetDateTime};

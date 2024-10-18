@@ -7,6 +7,7 @@ mod tests {
         InsuranceCard, InsuranceCardForCreate, InsuranceCardForUpdate, InsuranceCardImage,
         InsuranceCardImageForCreate, InsuranceCardImageForUpdate,
     };
+    use patient_profile::InsuranceCardService;
     use serial_test::serial;
     use services::*;
 

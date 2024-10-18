@@ -1,7 +1,113 @@
-use crate::base_service::BaseService;
+use crate::{
+    base_service::BaseService,
+    resource_service::{CreateService, DeleteService, GetService, PutService},
+    Result,
+};
+use async_trait::async_trait;
+use client::Client;
 use models::patient_profile::{Patient, PatientForCreate, PatientForUpdate};
 
-pub type PatientService<'a> = BaseService<'a, Patient, PatientForCreate, PatientForUpdate>;
+pub struct PatientService<'a> {
+    base: BaseService<'a, Patient, PatientForCreate, PatientForUpdate>,
+}
+
+impl<'a> PatientService<'a> {
+    pub fn new(client: &'a Client) -> Self {
+        Self {
+            base: BaseService::new(client),
+        }
+    }
+}
+
+#[async_trait]
+impl<'a> GetService<'a, Patient> for PatientService<'a> {
+    type Id = i64;
+
+    async fn get(&self, id: Self::Id) -> Result<Patient> {
+        self.base.get(id).await
+    }
+}
+
+#[async_trait]
+impl<'a> CreateService<'a, Patient, PatientForCreate> for PatientService<'a> {
+    async fn create(&self, resource: &PatientForCreate) -> Result<Patient> {
+        self.base.create(resource).await
+    }
+}
+
+#[async_trait]
+impl<'a> DeleteService<'a> for PatientService<'a> {
+    type Id = i64;
+    async fn delete(&self, id: i64) -> Result<()> {
+        self.base.delete(id).await
+    }
+}
+
+#[async_trait]
+impl<'a> PutService<'a, Patient, PatientForCreate> for PatientService<'a> {
+    type Id = i64;
+    async fn put(&self, id: i64, patient: &PatientForCreate) -> Result<Patient> {
+        self.base.put(id, patient).await
+    }
+}
+
+//pub type PatientService<'a> = BaseService<'a, Patient, PatientForCreate, PatientForUpdate>;
+
+//pub struct PatientService<'a> {
+//    base: BaseService<'a, Patient>,
+//}
+//
+//impl<'a> PatientService<'a> {
+//    pub fn new(client: &'a Client) -> Self {
+//        Self {
+//            base: BaseService::new(client),
+//        }
+//    }
+//}
+
+//#[async_trait]
+//impl<'a> GetService<'a, Patient> for PatientService<'a> {
+//    type Id = PatientId;
+//    async fn get(&self, id: Self::Id) -> Result<Patient, Error> {
+//        self.base.get(id).await
+//    }
+//}
+//
+//#[async_trait]
+//impl<'a> CreateService<'a, Patient, PatientForCreate> for PatientService<'a> {
+//    async fn create(&self, resource: &PatientForCreate) -> Result<Patient, Error> {
+//        self.base.create(resource).await
+//    }
+//}
+
+//pub trait Reeesource {
+//    type Id: ToString;
+//}
+//
+//impl Reeesource for Patient {
+//    type Id = i64;
+//}
+//
+//pub struct PatientService;
+//
+//pub trait ResourceService {
+//    const ENDPOINT: &'static str;
+//}
+//
+//impl ResourceService for PatientService {
+//    const ENDPOINT: &'static str = "/patients";
+//}
+//
+//generate_common_bmc_fns!(
+//    Bmc: PatientService,
+//    Entity: Patient,
+//    ForCreate: PatientForCreate,
+//    ForUpdate: PatientForUpdate,
+//);
+//
+//async fn some(client: &Client) {
+//    PatientService::get(client, 1).await;
+//}
 
 //use super::Result;
 //use client::{Client, PaginatedResponse};

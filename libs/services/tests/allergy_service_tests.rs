@@ -4,6 +4,8 @@ mod tests {
     use httpmock::Method::{DELETE, GET, PATCH, POST};
     use httpmock::MockServer;
     use models::patient_profile::{Allergy, AllergyForCreate, AllergyForUpdate, AllergyStatus};
+    use patient_profile::AllergyService;
+    use resource_service::*;
     use serial_test::serial;
     use services::*;
     use time::{Date, OffsetDateTime};

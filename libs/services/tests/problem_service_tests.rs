@@ -5,8 +5,9 @@ mod tests {
     use httpmock::MockServer;
     use models::patient_profile::*;
     use serial_test::serial;
-    use services::resource_service::ResourceService;
-    use services::{Error, ProblemService};
+    use services::patient_profile::ProblemService;
+    use services::resource_service::*;
+    use services::Error;
     use time::Date;
 
     #[serial]

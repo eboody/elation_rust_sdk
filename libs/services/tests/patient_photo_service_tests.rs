@@ -4,6 +4,7 @@ mod tests {
     use httpmock::Method::{DELETE, GET, PATCH, POST};
     use httpmock::MockServer;
     use models::patient_profile::{PatientPhoto, PatientPhotoForCreate, PatientPhotoForUpdate};
+    use patient_profile::PatientPhotoService;
     use serial_test::serial;
     use services::*;
     use time::OffsetDateTime;

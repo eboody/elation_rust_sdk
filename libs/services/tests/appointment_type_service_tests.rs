@@ -6,6 +6,8 @@ mod tests {
     use models::patient_profile::{
         AppointmentType, AppointmentTypeForCreate, AppointmentTypeForUpdate,
     };
+    use patient_profile::AppointmentTypeService;
+    use resource_service::*;
     use serial_test::serial;
     use services::*;
     use time::OffsetDateTime;
