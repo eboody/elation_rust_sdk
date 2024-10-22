@@ -124,6 +124,27 @@ pub struct Icd10Code {
     pub code: String,
 }
 
+/// Represents query parameters for searching patients.
+#[serde_as]
+#[derive(Clone, Debug, Default, Serialize, Deserialize)]
+#[allow(non_snake_case)]
+pub struct ProblemQueryParams {
+    /// Vector of IDs of patients to find problems for
+    pub patients: Vec<i64>,
+    ///// Filter for last modified date greater than (optional).
+    //pub last_modified__gt: Option<String>,
+    ///// Filter for last modified date greater than or equal to (optional).
+    //pub last_modified__gte: Option<String>,
+    ///// Filter for last modified date less than (optional).
+    //pub last_modified__lt: Option<String>,
+    ///// Filter for last modified date less than or equal to (optional).
+    //pub last_modified__lte: Option<String>,
+    ///// The maximum number of results to return (optional).
+    //pub limit: Option<i32>,
+    ///// The offset for pagination (optional).
+    //pub offset: Option<i32>,
+}
+
 impl Resource for Problem {
     type Id = i64;
 
