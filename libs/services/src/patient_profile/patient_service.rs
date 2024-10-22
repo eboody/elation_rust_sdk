@@ -48,8 +48,8 @@ impl<'a> DeleteService<'a> for PatientService<'a> {
 #[async_trait]
 impl<'a> PutService<'a, Patient, PatientForCreate> for PatientService<'a> {
     type Id = i64;
-    async fn put(&self, id: i64, patient: &PatientForCreate) -> Result<Patient> {
-        self.base.put(id, patient).await
+    async fn put(&self, patient: &PatientForCreate) -> Result<Patient> {
+        self.base.put(patient).await
     }
 }
 

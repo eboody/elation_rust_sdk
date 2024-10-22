@@ -112,6 +112,12 @@ pub struct AllergyForUpdate {
     pub medispandnid: Option<String>,
 }
 
+#[serde_as]
+#[derive(Clone, Debug, Serialize, Deserialize, Default)]
+pub struct AllergyQueryParams {
+    pub patient_id: Option<Vec<i64>>,
+}
+
 impl Resource for Allergy {
     type Id = i64;
 

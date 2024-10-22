@@ -197,7 +197,7 @@ mod tests {
 
         let mock = server.mock(|when, then| {
             when.method(httpmock::Method::PUT)
-                .path(format!("/patients/{}/", patient_id))
+                .path(format!("/patients/"))
                 .header("Content-Type", "application/json")
                 .json_body_partial(serde_json::to_string(&patient_fc).unwrap());
             then.status(200)
@@ -210,7 +210,7 @@ mod tests {
         let patient_service = PatientService::new(&client);
 
         // Call the method under test
-        let result = patient_service.put(patient_id, &patient_fc).await;
+        let result = patient_service.put(&patient_fc).await;
 
         println!("result: {result:#?}");
 

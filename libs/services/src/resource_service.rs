@@ -68,7 +68,7 @@ where
     C: Serialize + Send + Sync,
 {
     type Id: ToString + Send + Sync;
-    async fn put(&self, id: Self::Id, resource_for_create: &C) -> Result<T, Error>;
+    async fn put(&self, resource_for_create: &C) -> Result<T, Error>;
 }
 
 #[async_trait]

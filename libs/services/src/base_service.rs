@@ -112,8 +112,8 @@ where
 {
     type Id = T::Id;
 
-    async fn put(&self, id: Self::Id, resource_for_create: &C) -> Result<T, Error> {
-        let endpoint = format!("{}/{}/", T::endpoint(), id.to_string());
+    async fn put(&self, resource_for_create: &C) -> Result<T, Error> {
+        let endpoint = format!("{}/", T::endpoint());
         let response = self.client.put(&endpoint, resource_for_create).await?;
         let updated_resource = response.json::<T>().await?;
         Ok(updated_resource)
