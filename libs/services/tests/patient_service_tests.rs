@@ -6,7 +6,7 @@ mod tests {
     use models::patient_profile::*;
     use services::patient_profile::PatientService;
     use services::resource_service::{
-        CreateService, DeleteService, GetService, PutService, UpdateService,
+        CreateService, DeleteService, FindService, GetService, PutService, UpdateService,
     };
     use services::Error;
     use time::{Date, OffsetDateTime};
@@ -181,20 +181,25 @@ mod tests {
         // Mock the PUT /patients/{id}/ endpoint
         let patient_id = 123456;
 
-        let mock_patient = Patient {
+        let mock_patient = get_mock_patient(patient_id);
+
+        let patient_fc = PatientForCreate {
             first_name: "Johnny".to_owned(),
-            ..get_mock_patient(patient_id)
+            last_name: mock_patient.last_name.clone(),
+            address: None,
+            caregiver_practice: 1,
+            dob: mock_patient.dob,
+            emails: mock_patient.emails.clone(),
+            insurances: mock_patient.insurances.clone().unwrap(),
+            primary_physician: 1,
+            sex: Sex::Male,
         };
 
         let mock = server.mock(|when, then| {
             when.method(httpmock::Method::PUT)
                 .path(format!("/patients/{}/", patient_id))
                 .header("Content-Type", "application/json")
-                .json_body_partial(
-                    r#"{
-                        "first_name": "Johnny"
-                    }"#,
-                );
+                .json_body_partial(serde_json::to_string(&patient_fc).unwrap());
             then.status(200)
                 .header("Content-Type", "application/json")
                 .body(serde_json::to_string(&mock_patient).unwrap());
@@ -203,11 +208,6 @@ mod tests {
         // Create a client pointing to the mock server
         let client = Client::new().await.unwrap();
         let patient_service = PatientService::new(&client);
-
-        let patient_fc = PatientForCreate {
-            first_name: "Johnny".to_owned(),
-            ..PatientForUpdate::default()
-        };
 
         // Call the method under test
         let result = patient_service.put(patient_id, &patient_fc).await;
@@ -300,7 +300,7 @@ mod tests {
         };
 
         // Call the method under test
-        let result = patient_service.list(query_params).await;
+        let result = patient_service.find(query_params).await;
 
         println!("result: {result:#?}");
 

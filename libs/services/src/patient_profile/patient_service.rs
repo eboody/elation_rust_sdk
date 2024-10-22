@@ -1,11 +1,13 @@
 use crate::{
     base_service::BaseService,
-    resource_service::{CreateService, DeleteService, GetService, PutService},
+    resource_service::{
+        CreateService, DeleteService, FindService, GetService, PutService, UpdateService,
+    },
     Result,
 };
 use async_trait::async_trait;
-use client::Client;
-use models::patient_profile::{Patient, PatientForCreate, PatientForUpdate};
+use client::{Client, PaginatedResponse};
+use models::patient_profile::{Patient, PatientForCreate, PatientForUpdate, PatientQueryParams};
 
 pub struct PatientService<'a> {
     base: BaseService<'a, Patient, PatientForCreate, PatientForUpdate>,
@@ -51,6 +53,20 @@ impl<'a> PutService<'a, Patient, PatientForCreate> for PatientService<'a> {
     }
 }
 
+#[async_trait]
+impl<'a> UpdateService<'a, Patient, PatientForUpdate> for PatientService<'a> {
+    type Id = i64;
+    async fn update(&self, id: i64, patient: &PatientForUpdate) -> Result<Patient> {
+        self.base.update(id, patient).await
+    }
+}
+
+#[async_trait]
+impl<'a> FindService<'a, Patient, PatientQueryParams> for PatientService<'a> {
+    async fn find(&self, params: PatientQueryParams) -> Result<PaginatedResponse<Patient>> {
+        self.base.find(params).await
+    }
+}
 //pub type PatientService<'a> = BaseService<'a, Patient, PatientForCreate, PatientForUpdate>;
 
 //pub struct PatientService<'a> {

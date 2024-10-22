@@ -1,9 +1,9 @@
 use crate::error::Error;
 use crate::resource_service::{
-    CreateService, DeleteService, GetService, PutService, UpdateService,
+    CreateService, DeleteService, FindService, GetService, PutService, UpdateService,
 };
 use async_trait::async_trait;
-use client::Client;
+use client::{Client, PaginatedResponse, Params};
 use models::resource::Resource;
 use serde::de::DeserializeOwned;
 use serde::Serialize;
@@ -117,6 +117,23 @@ where
         let response = self.client.put(&endpoint, resource_for_create).await?;
         let updated_resource = response.json::<T>().await?;
         Ok(updated_resource)
+    }
+}
+
+#[async_trait]
+impl<'a, T, C, U, P> FindService<'a, T, P> for BaseService<'a, T, C, U>
+where
+    T: Resource + Serialize + DeserializeOwned + Send + Sync + Debug,
+    T::Id: ToString + Send + Sync,
+    C: Serialize + Send + Sync + Debug,
+    U: Serialize + Send + Sync + Debug,
+    P: Params + Send + Sync + 'a,
+{
+    async fn find(&self, params: P) -> Result<PaginatedResponse<T>, Error> {
+        let endpoint = format!("{}/", T::endpoint());
+        let response = self.client.get(&endpoint, params).await?;
+        let paginated_response = response.json::<PaginatedResponse<T>>().await?;
+        Ok(paginated_response)
     }
 }
 

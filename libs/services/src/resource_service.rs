@@ -83,5 +83,5 @@ where
     T: Resource + DeserializeOwned + Send + Sync,
     P: Params + Serialize + Send + Sync,
 {
-    async fn find(&self, params: &P) -> Result<PaginatedResponse<T>, Error>;
+    async fn find(&self, params: P) -> Result<PaginatedResponse<T>, Error>;
 }
