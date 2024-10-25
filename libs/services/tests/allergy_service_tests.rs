@@ -1,9 +1,11 @@
 #[cfg(test)]
 mod tests {
     use client::Client;
-    use httpmock::Method::{DELETE, GET, PATCH, POST};
+    use httpmock::Method::{DELETE, GET, POST, PUT};
     use httpmock::MockServer;
-    use models::patient_profile::{Allergy, AllergyForCreate, AllergyForUpdate, AllergyStatus};
+    use models::patient_profile::{Allergy, AllergyForCreate, AllergyStatus};
+    use patient_profile::AllergyService;
+    use resource_service::*;
     use serial_test::serial;
     use services::*;
     use time::{Date, OffsetDateTime};
@@ -48,18 +50,15 @@ mod tests {
         let client = Client::new().await.unwrap();
         let allergy_service = AllergyService::new(&client);
 
-        // Call the method under test
         let result = allergy_service.get(allergy_id).await;
 
         println!("result: {result:#?}");
 
-        // Assert the result
         assert!(result.is_ok());
         let fetched_allergy = result.unwrap();
         assert_eq!(fetched_allergy.id, allergy_id);
         assert_eq!(fetched_allergy.name, "Erythromycin");
 
-        // Ensure the mock was called
         mock.assert_async().await;
     }
 
@@ -96,7 +95,7 @@ mod tests {
         let client = Client::new().await.unwrap();
         let service = AllergyService::new(&client);
 
-        let result = service.create(&allergy_for_create).await;
+        let result = service.post(&allergy_for_create).await;
 
         println!("result: {result:#?}");
 
@@ -109,41 +108,45 @@ mod tests {
 
     #[serial]
     #[tokio::test]
-    async fn test_update_patch_allergy_success() {
+    async fn test_update_put_allergy_success() {
         let server = MockServer::start_async().await;
 
         std::env::set_var("TEST_ENV", "TRUE");
         std::env::set_var("MOCK_SERVER_URL", server.base_url());
 
         let allergy_id = 123456;
-        let mock_allergy = Allergy {
+        let mock_allergy = get_mock_allergy(allergy_id);
+
+        let allergy_fc = AllergyForCreate {
             name: "Updated Erythromycin".to_owned(),
+            medispanid: mock_allergy.medispanid,
+            medispandnid: mock_allergy.medispandnid,
+            patient: 1,
+            reaction: mock_allergy.reaction,
+            severity: mock_allergy.severity,
+            start_date: mock_allergy.start_date,
+            status: mock_allergy.status,
+        };
+
+        let updated_allergy = Allergy {
+            name: "Updated Erythromycin".to_string(),
             ..get_mock_allergy(allergy_id)
         };
 
         let mock = server.mock(|when, then| {
-            when.method(PATCH)
-                .path(format!("/allergies/{}/", allergy_id))
+            when.method(PUT)
+                .path(format!("/allergies/"))
                 .header("Content-Type", "application/json")
-                .json_body_partial(
-                    r#"{
-                        "name": "Updated Erythromycin"
-                    }"#,
-                );
+                .json_body_partial(serde_json::to_string(&allergy_fc).unwrap());
             then.status(200)
                 .header("Content-Type", "application/json")
-                .body(serde_json::to_string(&mock_allergy).unwrap());
+                .body(serde_json::to_string(&updated_allergy).unwrap());
         });
 
         let client = Client::new().await.unwrap();
         let allergy_service = AllergyService::new(&client);
 
-        let allergy_fu = AllergyForUpdate {
-            name: Some("Updated Erythromycin".to_owned()),
-            ..AllergyForUpdate::default()
-        };
-
-        let result = allergy_service.update(allergy_id, &allergy_fu).await;
+        let result = allergy_service.put(&allergy_fc).await;
 
         println!("result: {result:#?}");
 

@@ -5,7 +5,8 @@ mod tests {
     use httpmock::MockServer;
     use models::patient_profile::{Vaccine, VaccineForCreate, VaccineForUpdate};
     use serial_test::serial;
-    use services::*;
+    use services::patient_profile::VaccineService;
+    use services::prelude::*;
     use time::OffsetDateTime;
 
     fn get_mock_vaccine(vaccine_id: i64) -> Vaccine {
@@ -99,7 +100,7 @@ mod tests {
         let client = Client::new().await.unwrap();
         let service = VaccineService::new(&client);
 
-        let result = service.create(&vaccine_for_create).await;
+        let result = service.post(&vaccine_for_create).await;
 
         println!("result: {result:#?}");
 
@@ -146,7 +147,7 @@ mod tests {
             ..VaccineForUpdate::default()
         };
 
-        let result = vaccine_service.update(vaccine_id, &vaccine_fu).await;
+        let result = vaccine_service.patch(vaccine_id, &vaccine_fu).await;
 
         println!("result: {result:#?}");
 

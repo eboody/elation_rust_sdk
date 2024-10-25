@@ -610,6 +610,7 @@ pub enum SexualOrientation {
 impl Resource for Patient {
     type Id = i64;
 
+    //type Endpoint = &'static str;
     fn endpoint() -> &'static str {
         "/patients"
     }
