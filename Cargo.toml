@@ -27,3 +27,6 @@ derive_more = {version = "1", features = ["from", "display"] }
 log = "^0.4"
 
 serial_test = "^3"
+
+[workspace.metadata.scripts]
+zip = "7z a -tzip -xr'!target' -xr'!node_modules' -xr'!dist' -xr'!.git' -xr'!.jpg' -xr'!.png' elation_rust_sdk ."

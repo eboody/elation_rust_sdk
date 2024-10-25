@@ -1,5 +1,3 @@
-use crate::base_service::BaseService;
+mod lab_order;
 
-use models::orders::{LabOrder, LabOrderForCreate, LabOrderForUpdate};
-
-pub type LabOrderService<'a> = BaseService<'a, LabOrder, LabOrderForCreate, LabOrderForUpdate>;
+pub use lab_order::*;
