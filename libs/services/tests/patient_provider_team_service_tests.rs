@@ -8,9 +8,9 @@ mod tests {
         PatientProviderTeamMember, PatientProviderTeamMemberForCreate,
         PatientProviderTeamMemberForUpdate,
     };
-    use patient_profile::PatientProviderTeamService;
     use serial_test::serial;
-    use services::*;
+    use services::patient_profile::PatientProviderTeamService;
+    use services::prelude::*;
     use time::OffsetDateTime;
 
     fn get_mock_patient_provider_team(team_id: i64) -> PatientProviderTeam {
@@ -104,7 +104,7 @@ mod tests {
         let client = Client::new().await.unwrap();
         let service = PatientProviderTeamService::new(&client);
 
-        let result = service.create(&team_for_create).await;
+        let result = service.post(&team_for_create).await;
 
         println!("result: {result:#?}");
 
@@ -171,9 +171,7 @@ mod tests {
             }]),
         };
 
-        let result = patient_provider_team_service
-            .update(team_id, &team_fu)
-            .await;
+        let result = patient_provider_team_service.patch(team_id, &team_fu).await;
 
         println!("result: {result:#?}");
 

@@ -1,5 +1,14 @@
-use crate::base_service::BaseService;
-use models::patient_profile::{Immunization, ImmunizationForCreate, ImmunizationForUpdate};
+use crate::prelude::*;
+use models::patient_profile::{
+    Immunization, ImmunizationForCreate, ImmunizationForUpdate, PatientProfileQueryParams,
+};
 
-pub type ImmunizationService<'a> =
-    BaseService<'a, Immunization, ImmunizationForCreate, ImmunizationForUpdate>;
+impl_service!(
+    ServiceName: ImmunizationService,
+    Resource: Immunization,
+    ForCreate: ImmunizationForCreate,
+    ForUpdate: ImmunizationForUpdate,
+    QueryParams: PatientProfileQueryParams,
+    IdType: i64,
+    Traits: [GetService, FindService, PostService, DeleteService]
+);

@@ -6,8 +6,7 @@ mod tests {
     use models::patient_profile::*;
     use serial_test::serial;
     use services::patient_profile::ProblemService;
-    use services::resource_service::*;
-    use services::Error;
+    use services::prelude::*;
     use time::Date;
 
     #[serial]
@@ -89,7 +88,7 @@ mod tests {
         let service = ProblemService::new(&client);
 
         // Call the method under test
-        let result = service.create(&problem_for_create).await;
+        let result = service.post(&problem_for_create).await;
 
         println!("result: {result:#?}");
 
@@ -140,7 +139,7 @@ mod tests {
         };
 
         // Call the method under test
-        let result = problem_service.update(problem_id, &problem_fu).await;
+        let result = problem_service.patch(problem_id, &problem_fu).await;
 
         println!("result: {result:#?}");
 

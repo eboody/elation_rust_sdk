@@ -615,15 +615,3 @@ impl Resource for Patient {
         "/patients"
     }
 }
-
-//impl Reeesource for Patient {
-//    const ENDPOINT: &'static str = "/patients";
-//    type Id = i64;
-//}
-
-//generate_common_bmc_fns!(
-//    Bmc: PatientBmc,
-//    Entity: Patient,
-//    ForCreate: PatientForCreate,
-//    ForUpdate: PatientForUpdate,
-//);

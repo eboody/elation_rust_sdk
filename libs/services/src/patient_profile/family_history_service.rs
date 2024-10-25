@@ -1,6 +1,15 @@
-use crate::base_service::BaseService;
+use crate::prelude::*;
 
-use models::patient_profile::{FamilyHistory, FamilyHistoryForCreate, FamilyHistoryForUpdate};
+use models::patient_profile::{
+    FamilyHistory, FamilyHistoryForCreate, FamilyHistoryForUpdate, PatientProfileQueryParams,
+};
 
-pub type FamilyHistoryService<'a> =
-    BaseService<'a, FamilyHistory, FamilyHistoryForCreate, FamilyHistoryForUpdate>;
+impl_service!(
+    ServiceName: FamilyHistoryService,
+    Resource: FamilyHistory,
+    ForCreate: FamilyHistoryForCreate,
+    ForUpdate: FamilyHistoryForUpdate,
+    QueryParams: PatientProfileQueryParams,
+    IdType: i64,
+    Traits: [GetService, FindService, PostService, DeleteService]
+);

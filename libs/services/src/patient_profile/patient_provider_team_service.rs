@@ -1,12 +1,22 @@
-use crate::base_service::BaseService;
+use crate::prelude::*;
 
 use models::patient_profile::{
-    PatientProviderTeam, PatientProviderTeamForCreate, PatientProviderTeamForUpdate,
+    PatientProfileQueryParams, PatientProviderTeam, PatientProviderTeamForCreate,
+    PatientProviderTeamForUpdate,
 };
 
-pub type PatientProviderTeamService<'a> = BaseService<
-    'a,
-    PatientProviderTeam,
-    PatientProviderTeamForCreate,
-    PatientProviderTeamForUpdate,
->;
+impl_service!(
+    ServiceName: PatientProviderTeamService,
+    Resource: PatientProviderTeam,
+    ForCreate: PatientProviderTeamForCreate,
+    ForUpdate: PatientProviderTeamForUpdate,
+    QueryParams: PatientProfileQueryParams,
+    IdType: i64,
+    Traits: [
+        GetService,
+        FindService,
+        PostService,
+        PatchService,
+        DeleteService
+    ]
+);

@@ -1,5 +1,6 @@
 pub mod base_service;
 pub mod macros;
+pub mod prelude;
 pub mod resource_service;
 
 pub mod orders;

@@ -5,10 +5,7 @@ mod tests {
     use httpmock::MockServer;
     use models::patient_profile::*;
     use services::patient_profile::PatientService;
-    use services::resource_service::{
-        CreateService, DeleteService, FindService, GetService, PutService, UpdateService,
-    };
-    use services::Error;
+    use services::prelude::*;
     use time::{Date, OffsetDateTime};
 
     use serial_test::serial;
@@ -95,7 +92,7 @@ mod tests {
         let service = PatientService::new(&client);
 
         // Call the method under test
-        let result = service.create(&patient_for_create).await;
+        let result = service.post(&patient_for_create).await;
 
         println!("result: {result:#?}");
 
@@ -152,7 +149,7 @@ mod tests {
         };
 
         // Call the method under test
-        let result = patient_service.update(patient_id, &patient_fu).await;
+        let result = patient_service.patch(patient_id, &patient_fu).await;
 
         println!("result: {result:#?}");
 

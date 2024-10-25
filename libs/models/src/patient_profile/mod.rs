@@ -27,3 +27,10 @@ pub use problem::*;
 pub use vaccine::*;
 
 pub mod utils;
+
+/// Represents the default query parameters for finding the various Patient Profile resources
+#[derive(Debug, serde::Serialize, serde::Deserialize, Default)]
+pub struct PatientProfileQueryParams {
+    /// A vector of patient IDs
+    patient: Vec<i64>,
+}

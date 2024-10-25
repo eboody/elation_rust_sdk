@@ -1,5 +1,15 @@
-use crate::base_service::BaseService;
+use crate::prelude::*;
 
-use models::patient_profile::{Vaccine, VaccineForCreate, VaccineForUpdate};
+use models::patient_profile::{
+    PatientProfileQueryParams, Vaccine, VaccineForCreate, VaccineForUpdate,
+};
 
-pub type VaccineService<'a> = BaseService<'a, Vaccine, VaccineForCreate, VaccineForUpdate>;
+impl_service!(
+    ServiceName: VaccineService,
+    Resource: Vaccine,
+    ForCreate: VaccineForCreate,
+    ForUpdate: VaccineForUpdate,
+    QueryParams: PatientProfileQueryParams,
+    IdType: i64,
+    Traits: [GetService, FindService, PostService, PatchService, DeleteService]
+);

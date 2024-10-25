@@ -1,83 +1,144 @@
-// Helper macro to implement the specified trait for the service
 #[macro_export]
 macro_rules! impl_service_trait {
-    // Implementation for GetService
-    ($service:ident, $resource:ty, $id:ty, $_create:ty, $_update:ty, GetService) => {
-        #[async_trait]
-        impl<'a> GetService<'a, $resource> for $service<'a> {
-            type Id = $id;
+    // Implement GetService
+    (
+        $service_name:ident,
+        $resource:ty,
+        $resource_for_create:ty,
+        $resource_for_update:ty,
+        $resource_query_params:ty,
+        $id_type:ty,
+        GetService
+    ) => {
+        #[async_trait::async_trait]
+        impl<'a> GetService<'a, $resource> for $service_name<'a> {
+            type Id = $id_type;
 
-            async fn get(&self, id: Self::Id) -> Result<$resource, Error> {
+            async fn get(&self, id: Self::Id) -> Result<$resource> {
                 self.base.get(id).await
             }
         }
     };
 
-    // Implementation for CreateService
-    ($service:ident, $resource:ty, $_id:ty, $create:ty, $_update:ty, CreateService) => {
-        #[async_trait]
-        impl<'a> CreateService<'a, $resource, $create> for $service<'a> {
-            async fn create(&self, resource: &$create) -> Result<$resource, Error> {
-                self.base.create(resource).await
+    // Implement CreateService
+    (
+        $service_name:ident,
+        $resource:ty,
+        $resource_for_create:ty,
+        $resource_for_update:ty,
+        $resource_query_params:ty,
+        $id_type:ty,
+        PostService
+    ) => {
+        #[async_trait::async_trait]
+        impl<'a> PostService<'a, $resource, $resource_for_create> for $service_name<'a> {
+            async fn post(&self, resource: &$resource_for_create) -> Result<$resource> {
+                self.base.post(resource).await
             }
         }
     };
 
-    // Implementation for UpdateService
-    ($service:ident, $resource:ty, $id:ty, $_create:ty, $update:ty, UpdateService) => {
-        #[async_trait]
-        impl<'a> UpdateService<'a, $resource, $update> for $service<'a> {
-            type Id = $id;
+    // Implement DeleteService
+    (
+        $service_name:ident,
+        $resource:ty,
+        $resource_for_create:ty,
+        $resource_for_update:ty,
+        $resource_query_params:ty,
+        $id_type:ty,
+        DeleteService
+    ) => {
+        #[async_trait::async_trait]
+        impl<'a> DeleteService<'a> for $service_name<'a> {
+            type Id = $id_type;
 
-            async fn update(&self, id: Self::Id, resource: &$update) -> Result<$resource, Error> {
-                self.base.update(id, resource).await
-            }
-        }
-    };
-
-    // Implementation for DeleteService
-    ($service:ident, $_resource:ty, $id:ty, $_create:ty, $_update:ty, DeleteService) => {
-        #[async_trait]
-        impl<'a> DeleteService<'a> for $service<'a> {
-            type Id = $id;
-
-            async fn delete(&self, id: Self::Id) -> Result<(), Error> {
+            async fn delete(&self, id: Self::Id) -> Result<()> {
                 self.base.delete(id).await
             }
         }
     };
 
-    // Implementation for ListService
-    ($service:ident, $resource:ty, $_id:ty, $_create:ty, $_update:ty, ListService) => {
-        #[async_trait]
-        impl<'a> ListService<'a, $resource> for $service<'a> {
-            async fn list<P>(&self, params: P) -> Result<PaginatedResponse<$resource>, Error>
-            where
-                P: Params + Send + Sync,
-            {
-                self.base.list(params).await
+    // Implement UpdateService
+    (
+        $service_name:ident,
+        $resource:ty,
+        $resource_for_create:ty,
+        $resource_for_update:ty,
+        $resource_query_params:ty,
+        $id_type:ty,
+        PatchService
+    ) => {
+        #[async_trait::async_trait]
+        impl<'a> PatchService<'a, $resource, $resource_for_update> for $service_name<'a> {
+            type Id = $id_type;
+
+            async fn patch(
+                &self,
+                id: Self::Id,
+                resource: &$resource_for_update,
+            ) -> Result<$resource> {
+                self.base.patch(id, resource).await
+            }
+        }
+    };
+
+    // Implement PutService
+    (
+        $service_name:ident,
+        $resource:ty,
+        $resource_for_create:ty,
+        $resource_for_update:ty,
+        $resource_query_params:ty,
+        $id_type:ty,
+        PutService
+    ) => {
+        #[async_trait::async_trait]
+        impl<'a> PutService<'a, $resource, $resource_for_create> for $service_name<'a> {
+            type Id = $id_type;
+
+            async fn put(&self, resource: &$resource_for_create) -> Result<$resource> {
+                self.base.put(resource).await
+            }
+        }
+    };
+
+    // Implement FindService
+    (
+        $service_name:ident,
+        $resource:ty,
+        $resource_for_create:ty,
+        $resource_for_update:ty,
+        $resource_query_params:ty,
+        $id_type:ty,
+        FindService
+    ) => {
+        #[async_trait::async_trait]
+        impl<'a> FindService<'a, $resource, $resource_query_params> for $service_name<'a> {
+            async fn find(
+                &self,
+                params: $resource_query_params,
+            ) -> Result<PaginatedResponse<$resource>> {
+                self.base.find(params).await
             }
         }
     };
 }
-
 #[macro_export]
 macro_rules! impl_service {
     (
-        $service:ident,
-        $resource:ty,
-        $id:ty,
-        $create:ty,
-        $update:ty,
-        [$($trait:ident),*]
+        ServiceName: $service_name:ident,
+        Resource: $resource:ty,
+        ForCreate: $resource_for_create:ty,
+        ForUpdate: $resource_for_update:ty,
+        QueryParams: $resource_query_params:ty,
+        IdType: $id_type:ty,
+        Traits: [$($trait_name:ident),*]
     ) => {
-        // Define the service struct
-        pub struct $service<'a> {
-            base: BaseService<'a, $resource, $create, $update>,
+        pub struct $service_name<'a> {
+            base: BaseService<'a, $resource, $resource_for_create, $resource_for_update>,
         }
 
-        // Implement the constructor
-        impl<'a> $service<'a> {
+        impl<'a> $service_name<'a> {
             pub fn new(client: &'a Client) -> Self {
                 Self {
                     base: BaseService::new(client),
@@ -85,9 +146,16 @@ macro_rules! impl_service {
             }
         }
 
-        // Implement the specified traits by delegating to BaseService
         $(
-            impl_service_trait!($service, $resource, $id, $create, $update, $trait);
+            crate::impl_service_trait!(
+                $service_name,
+                $resource,
+                $resource_for_create,
+                $resource_for_update,
+                $resource_query_params,
+                $id_type,
+                $trait_name
+            );
         )*
     };
 }

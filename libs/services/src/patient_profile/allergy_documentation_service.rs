@@ -1,13 +1,16 @@
-use crate::base_service::BaseService;
-pub use crate::resource_service::ResourceService;
+use crate::prelude::*;
 
 use models::patient_profile::{
     AllergyDocumentation, AllergyDocumentationForCreate, AllergyDocumentationForUpdate,
+    PatientProfileQueryParams,
 };
 
-pub type AllergyDocumentationService<'a> = BaseService<
-    'a,
-    AllergyDocumentation,
-    AllergyDocumentationForCreate,
-    AllergyDocumentationForUpdate,
->;
+impl_service!(
+    ServiceName: AllergyDocumentationService,
+    Resource: AllergyDocumentation,
+    ForCreate: AllergyDocumentationForCreate,
+    ForUpdate: AllergyDocumentationForUpdate,
+    QueryParams: PatientProfileQueryParams,
+    IdType: i64,
+    Traits: [GetService, PostService, FindService, DeleteService]
+);

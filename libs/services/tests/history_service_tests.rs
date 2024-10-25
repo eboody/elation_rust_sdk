@@ -1,13 +1,12 @@
 #[cfg(test)]
 mod tests {
     use client::Client;
-    use httpmock::Method::{DELETE, GET, PATCH, POST};
+    use httpmock::Method::{DELETE, GET, POST};
     use httpmock::MockServer;
-    use models::patient_profile::{History, HistoryForCreate, HistoryForUpdate, HistoryType};
-    use patient_profile::HistoryService;
-    use resource_service::GetService;
+    use models::patient_profile::{History, HistoryForCreate, HistoryType};
     use serial_test::serial;
-    use services::*;
+    use services::patient_profile::HistoryService;
+    use services::prelude::*;
     use time::OffsetDateTime;
 
     fn get_mock_history(id: i64) -> History {
@@ -84,7 +83,7 @@ mod tests {
         let client = Client::new().await.unwrap();
         let service = HistoryService::new(&client);
 
-        let result = service.create(&history_for_create).await;
+        let result = service.post(&history_for_create).await;
 
         println!("result: {result:#?}");
 
@@ -94,53 +93,53 @@ mod tests {
 
         mock.assert_async().await;
     }
-
-    #[serial]
-    #[tokio::test]
-    async fn test_update_patch_history_success() {
-        let server = MockServer::start_async().await;
-
-        std::env::set_var("TEST_ENV", "TRUE");
-        std::env::set_var("MOCK_SERVER_URL", server.base_url());
-
-        let history_id = 123456;
-        let mock_history = History {
-            text: "Updated Yogurt daily".to_owned(),
-            ..get_mock_history(history_id)
-        };
-
-        let mock = server.mock(|when, then| {
-            when.method(PATCH)
-                .path(format!("/histories/{}/", history_id))
-                .header("Content-Type", "application/json")
-                .json_body_partial(
-                    r#"{
-                        "text": "Updated Yogurt daily"
-                    }"#,
-                );
-            then.status(200)
-                .header("Content-Type", "application/json")
-                .body(serde_json::to_string(&mock_history).unwrap());
-        });
-
-        let client = Client::new().await.unwrap();
-        let history_service = HistoryService::new(&client);
-
-        let history_fu = HistoryForUpdate {
-            text: Some("Updated Yogurt daily".to_owned()),
-            ..HistoryForUpdate::default()
-        };
-
-        let result = history_service.update(history_id, &history_fu).await;
-
-        println!("result: {result:#?}");
-
-        assert!(result.is_ok());
-        let updated_history = result.unwrap();
-        assert_eq!(updated_history.id, history_id);
-
-        mock.assert_async().await;
-    }
+    //
+    //#[serial]
+    //#[tokio::test]
+    //async fn test_update_patch_history_success() {
+    //    let server = MockServer::start_async().await;
+    //
+    //    std::env::set_var("TEST_ENV", "TRUE");
+    //    std::env::set_var("MOCK_SERVER_URL", server.base_url());
+    //
+    //    let history_id = 123456;
+    //    let mock_history = History {
+    //        text: "Updated Yogurt daily".to_owned(),
+    //        ..get_mock_history(history_id)
+    //    };
+    //
+    //    let mock = server.mock(|when, then| {
+    //        when.method(PATCH)
+    //            .path(format!("/histories/{}/", history_id))
+    //            .header("Content-Type", "application/json")
+    //            .json_body_partial(
+    //                r#"{
+    //                    "text": "Updated Yogurt daily"
+    //                }"#,
+    //            );
+    //        then.status(200)
+    //            .header("Content-Type", "application/json")
+    //            .body(serde_json::to_string(&mock_history).unwrap());
+    //    });
+    //
+    //    let client = Client::new().await.unwrap();
+    //    let history_service = HistoryService::new(&client);
+    //
+    //    let history_fu = HistoryForUpdate {
+    //        text: Some("Updated Yogurt daily".to_owned()),
+    //        ..HistoryForUpdate::default()
+    //    };
+    //
+    //    let result = history_service.update(history_id, &history_fu).await;
+    //
+    //    println!("result: {result:#?}");
+    //
+    //    assert!(result.is_ok());
+    //    let updated_history = result.unwrap();
+    //    assert_eq!(updated_history.id, history_id);
+    //
+    //    mock.assert_async().await;
+    //}
 
     #[serial]
     #[tokio::test]

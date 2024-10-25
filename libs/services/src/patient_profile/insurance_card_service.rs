@@ -1,6 +1,15 @@
-use crate::base_service::BaseService;
+use crate::prelude::*;
 
-use models::patient_profile::{InsuranceCard, InsuranceCardForCreate, InsuranceCardForUpdate};
+use models::patient_profile::{
+    InsuranceCard, InsuranceCardForCreate, InsuranceCardForUpdate, PatientProfileQueryParams,
+};
 
-pub type InsuranceCardService<'a> =
-    BaseService<'a, InsuranceCard, InsuranceCardForCreate, InsuranceCardForUpdate>;
+impl_service!(
+    ServiceName: InsuranceCardService,
+    Resource: InsuranceCard,
+    ForCreate: InsuranceCardForCreate,
+    ForUpdate: InsuranceCardForUpdate,
+    QueryParams: PatientProfileQueryParams,
+    IdType: i32,
+    Traits: [ FindService, PostService, DeleteService ]
+);

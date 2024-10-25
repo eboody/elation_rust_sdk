@@ -50,18 +50,15 @@ mod tests {
         let client = Client::new().await.unwrap();
         let allergy_service = AllergyService::new(&client);
 
-        // Call the method under test
         let result = allergy_service.get(allergy_id).await;
 
         println!("result: {result:#?}");
 
-        // Assert the result
         assert!(result.is_ok());
         let fetched_allergy = result.unwrap();
         assert_eq!(fetched_allergy.id, allergy_id);
         assert_eq!(fetched_allergy.name, "Erythromycin");
 
-        // Ensure the mock was called
         mock.assert_async().await;
     }
 
@@ -98,7 +95,7 @@ mod tests {
         let client = Client::new().await.unwrap();
         let service = AllergyService::new(&client);
 
-        let result = service.create(&allergy_for_create).await;
+        let result = service.post(&allergy_for_create).await;
 
         println!("result: {result:#?}");
 
