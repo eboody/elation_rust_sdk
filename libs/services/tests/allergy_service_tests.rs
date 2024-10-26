@@ -135,7 +135,7 @@ mod tests {
 
         let mock = server.mock(|when, then| {
             when.method(PUT)
-                .path(format!("/allergies/"))
+                .path("/allergies/")
                 .header("Content-Type", "application/json")
                 .json_body_partial(serde_json::to_string(&allergy_fc).unwrap());
             then.status(200)

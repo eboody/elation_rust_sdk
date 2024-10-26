@@ -3,6 +3,8 @@ use serde::{Deserialize, Serialize};
 use serde_with::serde_as;
 use time::OffsetDateTime;
 
+use super::Resolution;
+
 /// Represents a Lab Order for a patient.
 ///
 /// A lab order contains details such as the ordering physician, patient, requisition, and resolution.
@@ -143,31 +145,31 @@ pub struct AOEQuestion {
     pub answer: Option<String>,
 }
 
-/// Represents the resolution of the lab order.
-#[serde_as]
-#[derive(Clone, Debug, Serialize, Deserialize)]
-pub struct Resolution {
-    /// The ID of the resolution.
-    pub id: i64,
-
-    /// The document ID of the lab order.
-    pub document: i64,
-
-    /// The document resolving the lab order.
-    pub resolving_document: i64,
-
-    /// The state of the resolution (outstanding, fulfilled, cancelled).
-    pub state: String,
-
-    /// The note attached to the resolution (optional).
-    pub note: Option<String>,
-
-    /// The date the resolution was created.
-    pub created_date: OffsetDateTime,
-
-    /// The date the resolution was deleted (optional).
-    pub deleted_date: Option<OffsetDateTime>,
-}
+///// Represents the resolution of the lab order.
+//#[serde_as]
+//#[derive(Clone, Debug, Serialize, Deserialize)]
+//pub struct Resolution {
+//    /// The ID of the resolution.
+//    pub id: i64,
+//
+//    /// The document ID of the lab order.
+//    pub document: i64,
+//
+//    /// The document resolving the lab order.
+//    pub resolving_document: i64,
+//
+//    /// The state of the resolution (outstanding, fulfilled, cancelled).
+//    pub state: Resol,
+//
+//    /// The note attached to the resolution (optional).
+//    pub note: Option<String>,
+//
+//    /// The date the resolution was created.
+//    pub created_date: OffsetDateTime,
+//
+//    /// The date the resolution was deleted (optional).
+//    pub deleted_date: Option<OffsetDateTime>,
+//}
 
 /// Represents the data required to create a new lab order.
 #[serde_as]

@@ -9,3 +9,6 @@ pub mod patient_profile;
 mod error;
 pub use crate::resource_service::ResourceService;
 pub use error::*;
+
+#[macro_use]
+extern crate doc_comment;

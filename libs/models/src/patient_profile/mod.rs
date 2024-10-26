@@ -32,5 +32,5 @@ pub mod utils;
 #[derive(Debug, serde::Serialize, serde::Deserialize, Default)]
 pub struct PatientProfileQueryParams {
     /// A vector of patient IDs
-    patient: Vec<i64>,
+    pub patients: Vec<i64>,
 }

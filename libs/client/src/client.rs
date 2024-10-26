@@ -33,6 +33,68 @@ impl<T: Serialize + Default + Debug> Params for T {}
 ///
 /// * `T` - The type of the items contained in the `results` list.
 ///
+/// # Fields
+///
+/// * `count` - The total number of items available in the dataset, regardless of pagination.
+/// * `next` - An `Option<String>` containing the URL to the next page, if any.
+/// * `previous` - An `Option<String>` containing the URL to the previous page, if any.
+/// * `results` - A `Vec<T>` containing the items for the current page.
+///
+/// # Examples
+///
+/// ## Example: Fetching a Single Page
+///
+/// The `FindService` trait, which is often implemented by services in this SDK, returns a `PaginatedResponse`.
+/// Here’s how you might fetch a single page and work with the results:
+///
+/// ```rust
+/// use services::{Client, WhateverService, MyResource, MyQueryParams, Result};
+///
+/// async fn fetch_single_page(client: &Client) -> Result<()> {
+///     let service = WhateverService::new(client);
+///     let params = MyQueryParams { /* fields */ };
+///
+///     let response: PaginatedResponse<MyResource> = service.find(params).await?;
+///     println!("Total items available: {}", response.count);
+///     println!("Items on this page: {:?}", response.results);
+///
+///     Ok(())
+/// }
+/// ```
+///
+/// ## Example: Iterating Through All Pages
+///
+/// To retrieve all items across multiple pages, you can manually iterate using `fetch_next_page`,
+/// accumulating results until there are no more pages:
+///
+/// ```rust
+/// use services::{Client, WhateverService, MyResource, MyQueryParams, PaginatedResponse, Result};
+///
+/// async fn fetch_all_resources(client: &Client) -> Result<Vec<MyResource>> {
+///     let service = WhateverService::new(client);
+///     let params = MyQueryParams { /* fields */ };
+///
+///     // Start with the first page
+///     let mut current_page: PaginatedResponse<MyResource> = service.find(params).await?;
+///     let mut all_results = current_page.results;
+///
+///     // Continue fetching and appending results while there is a next page
+///     while current_page.has_next() {
+///         if let Some(next_page) = current_page.fetch_next_page(client).await? {
+///             all_results.extend(next_page.results);
+///             current_page = next_page;
+///         } else {
+///             break;
+///         }
+///     }
+///
+///     println!("Total items fetched: {}", all_results.len());
+///     Ok(all_results)
+/// }
+/// ```
+///
+/// In this approach, developers can handle paginated responses by iterating through each page,
+/// ensuring they retrieve all results across multiple pages if needed.
 #[serde_as]
 #[derive(Debug, Deserialize)]
 pub struct PaginatedResponse<T> {
@@ -93,6 +155,41 @@ where
         } else {
             Ok(None)
         }
+    }
+}
+
+impl<T> PaginatedResponse<T>
+where
+    T: DeserializeOwned + Debug,
+{
+    /// Fetches all pages of results, accumulating them into a single `Vec<T>`.
+    ///
+    /// This method repeatedly fetches the next page until no more pages are available.
+    ///
+    /// # Arguments
+    ///
+    /// * `client` - A reference to the `Client` instance to make the requests.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if any of the requests fail.
+    pub async fn fetch_all_pages(
+        client: &Client,
+        mut initial_page: PaginatedResponse<T>,
+    ) -> Result<Vec<T>> {
+        let mut all_results = std::mem::take(&mut initial_page.results);
+
+        let mut current_page = initial_page;
+        while current_page.has_next() {
+            if let Some(mut next_page) = current_page.fetch_next_page(client).await? {
+                all_results.append(&mut next_page.results);
+                current_page = next_page;
+            } else {
+                break;
+            }
+        }
+
+        Ok(all_results)
     }
 }
 
