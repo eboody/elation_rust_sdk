@@ -12,3 +12,4 @@ pub use cardiac_order_tests::*;
 pub use imaging_center::*;
 pub use imaging_order::*;
 pub use imaging_order_test::*;
+pub use lab_order::*;

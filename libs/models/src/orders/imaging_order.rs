@@ -1,4 +1,4 @@
-use super::ImagingOrderTest;
+use super::{Icd10Code, ImagingOrderTest};
 use serde::{Deserialize, Serialize};
 use serde_with::serde_as;
 use time::{Date, OffsetDateTime};
@@ -8,14 +8,14 @@ use crate::resource::Resource;
 
 time::serde::format_description!(one_true_date, Date, "[year]-[month]-[day]");
 
-/// Represents an ICD-10 code associated with an imaging order.
-#[derive(Clone, Debug, Serialize, Deserialize)]
-pub struct Icd10Code {
-    /// The ICD-10 code.
-    pub code: String,
-    /// The description of the ICD-10 code.
-    pub description: String,
-}
+///// Represents an ICD-10 code associated with an imaging order.
+//#[derive(Clone, Debug, Serialize, Deserialize)]
+//pub struct Icd10Code {
+//    /// The ICD-10 code.
+//    pub code: String,
+//    /// The description of the ICD-10 code.
+//    pub description: String,
+//}
 
 #[serde_as]
 /// Represents the resolution state of an imaging order.
@@ -115,12 +115,13 @@ impl Resource for ImagingOrder {
 
 /// Represents the possible stat methods for an imaging order.
 #[derive(Clone, Debug, Serialize, Deserialize)]
-#[serde(rename_all = "snake_case")]
+#[serde(rename_all = "lowercase")]
 pub enum StatMethod {
-    /// Wet reading via phone.
     WetReadingPhone,
-    /// Wet reading via fax.
     WetReadingFax,
+    StatPhone,
+    StatFax,
+    StatPhoneFax,
 }
 
 /// Represents the data required to create a new imaging order.

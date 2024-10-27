@@ -72,8 +72,9 @@ mod tests {
             follow_up_method: Some("email".to_string()),
             icd10_codes: Some(vec![Icd10Code {
                 code: "O09.529".to_string(),
-                description: "Supervision of elderly multigravida, unspecified trimester"
-                    .to_string(),
+                description: Some(
+                    "Supervision of elderly multigravida, unspecified trimester".to_string(),
+                ),
             }]),
             medications: Some("b-blocker".to_string()),
             patient: 140756664516609,
@@ -146,7 +147,7 @@ mod tests {
             follow_up_method: Some("phone".to_string()),
             icd10_codes: Some(vec![Icd10Code {
                 code: "A00".to_string(),
-                description: "Cholera".to_string(),
+                description: Some("Cholera".to_string()),
             }]),
             medications: Some("new medication".to_string()),
             patient: 140756664516609,  // Cannot be changed
@@ -212,7 +213,7 @@ mod tests {
             follow_up_method: Some("phone".to_string()),
             icd10_codes: Some(vec![Icd10Code {
                 code: "A00".to_string(),
-                description: "Cholera".to_string(),
+                description: Some("Cholera".to_string()),
             }]),
             medications: Some("new medication".to_string()),
             patient: 140756664516609,
@@ -321,8 +322,9 @@ mod tests {
             follow_up_method: Some("email".to_string()),
             icd10_codes: vec![Icd10Code {
                 code: "O09.529".to_string(),
-                description: "Supervision of elderly multigravida, unspecified trimester"
-                    .to_string(),
+                description: Some(
+                    "Supervision of elderly multigravida, unspecified trimester".to_string(),
+                ),
             }],
             medications: "b-blocker".to_string(),
             patient: 140756664516609,
