@@ -1,4 +1,4 @@
-use super::CardiacOrderTest;
+use super::{CardiacOrderTest, Icd10Code, Resolution};
 use serde::{Deserialize, Serialize};
 use serde_with::serde_as;
 use time::{Date, OffsetDateTime};
@@ -8,48 +8,48 @@ use crate::resource::Resource;
 
 time::serde::format_description!(one_true_date, Date, "[year]-[month]-[day]");
 
-/// Represents an ICD-10 code associated with a cardiac order.
-#[derive(Clone, Debug, Serialize, Deserialize)]
-pub struct Icd10Code {
-    /// The ICD-10 code.
-    pub code: String,
-    /// The description of the ICD-10 code.
-    pub description: String,
-}
+///// Represents an ICD-10 code associated with a cardiac order.
+//#[derive(Clone, Debug, Serialize, Deserialize)]
+//pub struct Icd10Code {
+//    /// The ICD-10 code.
+//    pub code: String,
+//    /// The description of the ICD-10 code.
+//    pub description: String,
+//}
 
-#[serde_as]
-/// Represents the resolution state of a cardiac order.
-#[derive(Clone, Debug, Serialize, Deserialize)]
-pub struct Resolution {
-    /// Internal ID to represent the resolution state.
-    pub id: i64,
-    /// Will be the same as the ID of the cardiac order.
-    pub document: i64,
-    /// If the order is fulfilled, will indicate the document referenced.
-    pub resolving_document: Option<i64>,
-    /// The resolution state of the order.
-    pub state: ResolutionState,
-    /// Any note that was added to represent why an order was cancelled (optional).
-    pub note: Option<String>,
-    /// The datetime when this resolution state was created.
-    #[serde_as(as = "Option<Rfc3339>")]
-    pub created_date: Option<OffsetDateTime>,
-    /// The datetime when this resolution was deleted. Should never be null because we're providing the most updated resolution.
-    #[serde_as(as = "Option<Rfc3339>")]
-    pub deleted_date: Option<OffsetDateTime>,
-}
+//#[serde_as]
+///// Represents the resolution state of a cardiac order.
+//#[derive(Clone, Debug, Serialize, Deserialize)]
+//pub struct Resolution {
+//    /// Internal ID to represent the resolution state.
+//    pub id: i64,
+//    /// Will be the same as the ID of the cardiac order.
+//    pub document: i64,
+//    /// If the order is fulfilled, will indicate the document referenced.
+//    pub resolving_document: Option<i64>,
+//    /// The resolution state of the order.
+//    pub state: ResolutionState,
+//    /// Any note that was added to represent why an order was cancelled (optional).
+//    pub note: Option<String>,
+//    /// The datetime when this resolution state was created.
+//    #[serde_as(as = "Option<Rfc3339>")]
+//    pub created_date: Option<OffsetDateTime>,
+//    /// The datetime when this resolution was deleted. Should never be null because we're providing the most updated resolution.
+//    #[serde_as(as = "Option<Rfc3339>")]
+//    pub deleted_date: Option<OffsetDateTime>,
+//}
 
-/// Represents the possible resolution states of a cardiac order.
-#[derive(Clone, Debug, Serialize, Deserialize)]
-#[serde(rename_all = "lowercase")]
-pub enum ResolutionState {
-    /// The order is outstanding.
-    Outstanding,
-    /// The order is fulfilled.
-    Fulfilled,
-    /// The order is cancelled.
-    Cancelled,
-}
+///// Represents the possible resolution states of a cardiac order.
+//#[derive(Clone, Debug, Serialize, Deserialize)]
+//#[serde(rename_all = "lowercase")]
+//pub enum ResolutionState {
+//    /// The order is outstanding.
+//    Outstanding,
+//    /// The order is fulfilled.
+//    Fulfilled,
+//    /// The order is cancelled.
+//    Cancelled,
+//}
 
 /// Represents a cardiac order with detailed information.
 #[serde_as]
