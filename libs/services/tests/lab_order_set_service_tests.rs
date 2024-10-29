@@ -27,6 +27,7 @@ mod tests {
         let mock = server.mock(|when, then| {
             when.method(GET)
                 .path(format!("/lab_order_sets/{}/", set_id));
+
             then.status(200)
                 .header("Content-Type", "application/json")
                 .body(serde_json::to_string(&lab_order_set).unwrap());
@@ -38,6 +39,8 @@ mod tests {
 
         // Call the method under test
         let result = service.get(set_id).await;
+
+        println!("{result:#?}");
 
         // Assert the result
         assert!(result.is_ok());

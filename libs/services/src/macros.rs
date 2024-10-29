@@ -28,6 +28,26 @@ concat!(
             impl<'a> GetService<'a, $resource> for $service_name<'a> {
                 type Id = $id_type;
 
+#[doc = "Fetches a single instance of the resource by ID."]
+#[doc = ""]
+#[doc = "### Parameters:"]
+#[doc = "- `id`: The unique identifier of the resource, of type `"] #[doc = stringify!($id_type)]
+#[doc = "`."]
+#[doc = ""]
+#[doc = "### Returns:"]
+#[doc = "- [`Result`] containing the requested resource if found, or an error if not."]
+#[doc = ""]
+#[doc = "### Example:"]
+#[doc = "```rust"]
+#[doc = "let service = "]
+#[doc = stringify!($service_name)]
+#[doc = "::new(&client);"]
+#[doc = "let id: "]
+#[doc = stringify!($id_type)]
+#[doc = " = ...;"]
+#[doc = "let resource = service.get(id).await?;"]
+#[doc = "println!(\"Resource: {:?}\", resource);"]
+#[doc = "```"]
                 async fn get(&self, id: Self::Id) -> Result<$resource> {
                     self.base.get(id).await
                 }
@@ -65,6 +85,27 @@ concat!(
 
             #[async_trait::async_trait]
             impl<'a> PostService<'a, $resource, $resource_for_create> for $service_name<'a> {
+#[doc = "Creates a new instance of the resource."]
+#[doc = ""]
+#[doc = "### Parameters:"]
+#[doc = "- `resource`: A reference to the creation struct of type `"]
+#[doc = stringify!($resource_for_create)]
+#[doc = "`."]
+#[doc = ""]
+#[doc = "### Returns:"]
+#[doc = "- [`Result`] containing the created resource if successful, or an error if creation fails."]
+#[doc = ""]
+#[doc = "### Example:"]
+#[doc = "```rust"]
+#[doc = "let service = "]
+#[doc = stringify!($service_name)]
+#[doc = "::new(&client);"]
+#[doc = "let new_resource = "]
+#[doc = stringify!($resource_for_create)]
+#[doc = " { /* fields */ };"]
+#[doc = "let created_resource = service.post(&new_resource).await?;"]
+#[doc = "println!(\"Created Resource: {:?}\", created_resource);"]
+#[doc = "```"]
                 async fn post(&self, resource: &$resource_for_create) -> Result<$resource> {
                     self.base.post(resource).await
                 }
@@ -102,6 +143,27 @@ concat!(
             impl<'a> DeleteService<'a> for $service_name<'a> {
                 type Id = $id_type;
 
+#[doc = "Deletes an existing resource by ID."]
+#[doc = ""]
+#[doc = "### Parameters:"]
+#[doc = "- `id`: The unique identifier of the resource to delete, of type `"]
+#[doc = stringify!($id_type)]
+#[doc = "`."]
+#[doc = ""]
+#[doc = "### Returns:"]
+#[doc = "- [`Result`]<()>: Indicates success with an empty result, or an error if deletion fails."]
+#[doc = ""]
+#[doc = "### Example:"]
+#[doc = "```rust"]
+#[doc = "let service = "]
+#[doc = stringify!($service_name)]
+#[doc = "::new(&client);"]
+#[doc = "let id: "]
+#[doc = stringify!($id_type)]
+#[doc = " = ...;"]
+#[doc = "service.delete(id).await?;"]
+#[doc = "println!(\"Resource deleted successfully.\");"]
+#[doc = "```"]
                 async fn delete(&self, id: Self::Id) -> Result<()> {
                     self.base.delete(id).await
                 }
@@ -141,6 +203,33 @@ concat!(
                 impl<'a> PatchService<'a, $resource, $resource_for_update> for $service_name<'a> {
                     type Id = $id_type;
 
+#[doc = "Applies a partial update to an existing resource by ID."]
+#[doc = ""]
+#[doc = "### Parameters:"]
+#[doc = "- `id`: The unique identifier of the resource to update, of type `"]
+#[doc = stringify!($id_type)]
+#[doc = "`."]
+#[doc = "- `resource`: A reference to the update struct, of type `"]
+#[doc = stringify!($resource_for_update)]
+#[doc = "`."]
+#[doc = ""]
+#[doc = "### Returns:"]
+#[doc = "- [`Result`] containing the updated resource if successful, or an error if the operation fails."]
+#[doc = ""]
+#[doc = "### Example:"]
+#[doc = "```rust"]
+#[doc = "let service = "]
+#[doc = stringify!($service_name)]
+#[doc = "::new(&client);"]
+#[doc = "let id: "]
+#[doc = stringify!($id_type)]
+#[doc = " = ...;"]
+#[doc = "let update_data = "]
+#[doc = stringify!($resource_for_update)]
+#[doc = " { /* fields */ };"]
+#[doc = "let updated_resource = service.patch(id, &update_data).await?;"]
+#[doc = "println!(\"Updated Resource: {:?}\", updated_resource);"]
+#[doc = "```"]
                     async fn patch(
                         &self,
                         id: Self::Id,
@@ -180,6 +269,27 @@ concat!(
             impl<'a> PutService<'a, $resource, $resource_for_create> for $service_name<'a> {
                 type Id = $id_type;
 
+#[doc = "Replaces an existing resource or creates it if it does not exist."]
+#[doc = ""]
+#[doc = "### Parameters:"]
+#[doc = "- `resource`: A reference to the struct used for replacement or creation, of type `"]
+#[doc = stringify!($resource_for_create)]
+#[doc = "`."]
+#[doc = ""]
+#[doc = "### Returns:"]
+#[doc = "- [`Result`] containing the upserted resource if successful, or an error if the operation fails."]
+#[doc = ""]
+#[doc = "### Example:"]
+#[doc = "```rust"]
+#[doc = "let service = "]
+#[doc = stringify!($service_name)]
+#[doc = "::new(&client);"]
+#[doc = "let resource_data = "]
+#[doc = stringify!($resource_for_create)]
+#[doc = " { /* fields */ };"]
+#[doc = "let upserted_resource = service.put(&resource_data).await?;"]
+#[doc = "println!(\"Upserted Resource: {:?}\", upserted_resource);"]
+#[doc = "```"]
                 async fn put(&self, resource: &$resource_for_create) -> Result<$resource> {
                     self.base.put(resource).await
                 }
@@ -230,6 +340,49 @@ concat!(
 ),
             #[async_trait::async_trait]
             impl<'a> FindService<'a, $resource, $resource_query_params> for $service_name<'a> {
+#[doc = "Finds pages of resources based on the provided query parameters."]
+#[doc = ""]
+#[doc = "### Parameters:"]
+#[doc = "- `params`: The query parameters used for filtering, of type `"]
+#[doc = stringify!($resource_query_params)]
+#[doc = "`."]
+#[doc = ""]
+#[doc = "### Returns:"]
+#[doc = "- [`Result`] containing a paginated list of resources matching the criteria, or an error if the operation fails."]
+#[doc = ""]
+#[doc = "### Example: Fetching a Single Page"]
+#[doc = "```rust"]
+#[doc = "let service = "]
+#[doc = stringify!($service_name)]
+#[doc = "::new(&client);"]
+#[doc = "let params = "]
+#[doc = stringify!($resource_query_params)]
+#[doc = " { /* fields */ };"]
+#[doc = "let page = service.find(params).await?;"]
+#[doc = "println!(\"Items on this page: {:?}\", page.results);"]
+#[doc = "println!(\"Total items available: {}\", page.count);"]
+#[doc = "```"]
+#[doc = ""]
+#[doc = "### Example: Iterating Through All Pages"]
+#[doc = "```rust"]
+#[doc = "let service = "]
+#[doc = stringify!($service_name)]
+#[doc = "::new(&client);"]
+#[doc = "let params = "]
+#[doc = stringify!($resource_query_params)]
+#[doc = " { /* fields */ };"]
+#[doc = "let mut current_page = service.find(params).await?;"]
+#[doc = "let mut all_results = current_page.results;"]
+#[doc = "while current_page.has_next() {"]
+#[doc = "    if let Some(next_page) = current_page.fetch_next_page(&client).await? {"]
+#[doc = "        all_results.extend(next_page.results);"]
+#[doc = "        current_page = next_page;"]
+#[doc = "    } else {"]
+#[doc = "        break;"]
+#[doc = "    }"]
+#[doc = "}"]
+#[doc = "println!(\"Total items fetched: {}\", all_results.len());"]
+#[doc = "```"]
                 async fn find(&self, params: $resource_query_params) -> Result<PaginatedResponse<$resource>> {
                     self.base.find(params).await
                 }

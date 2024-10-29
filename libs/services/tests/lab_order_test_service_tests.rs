@@ -25,7 +25,8 @@ mod tests {
         let lab_order_test = get_mock_lab_order_test(test_id);
 
         let mock = server.mock(|when, then| {
-            when.method(GET).path(format!("/lab_order_tests/{}/", test_id));
+            when.method(GET)
+                .path(format!("/lab_order_tests/{}/", test_id));
             then.status(200)
                 .header("Content-Type", "application/json")
                 .body(serde_json::to_string(&lab_order_test).unwrap());
