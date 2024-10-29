@@ -1,9 +1,10 @@
+use super::LabOrderTest;
 use serde::{Deserialize, Serialize};
 use serde_with::serde_as;
 use time::{Date, OffsetDateTime};
 use utils::time::Rfc3339;
 
-use crate::resource::Resource;
+use crate::{resource::Resource, Icd10Code};
 
 use super::{Resolution, ResolutionState, StatMethod};
 
@@ -107,72 +108,43 @@ pub struct LabOrderContent {
     pub tests: Vec<LabOrderTest>,
 }
 
-#[serde_as]
-#[derive(Clone, Debug, Serialize, Deserialize)]
-pub struct LabOrderTest {
-    /// The ID of the Lab Order Test.
-    pub id: i64,
-    /// The name of the Lab Order Test.
-    pub name: String,
-    /// Any code associated with the test, usually provided by the lab vendor's compendium.
-    pub code: Option<String>,
-    /// Code provided by specific compendiums that indicate the "class" of test.
-    pub procedure_class: Option<String>,
-    /// The ID of the practice that created the test if practice created.
-    pub practice_created: Option<i64>,
-    /// The ID of the lab vendor who provides the lab order test.
-    pub lab_vendor: Option<i64>,
-    /// The ID of the compendium provided by the lab vendor.
-    pub compendium: Option<i64>,
-    /// A list of CPT codes associated with the lab order test.
-    pub cpts: Vec<String>,
-    /// A list of synonyms that are useful when searching for a specific test.
-    pub synonyms: Vec<String>,
-    /// A list of Ask on Entry (AOE) Questions that need to be answered by the orderer when creating the order.
-    pub questions: Vec<AOEQuestion>,
-    /// Time at which Elation created this Lab Order Test.
-    #[serde_as(as = "Option<Rfc3339>")]
-    pub created_date: Option<OffsetDateTime>,
-    /// Time at which this Lab Order Test was deleted.
-    #[serde_as(as = "Option<Rfc3339>")]
-    pub deleted_date: Option<OffsetDateTime>,
-}
-
-#[derive(Clone, Debug, Serialize, Deserialize)]
-pub struct Icd10Code {
-    /// The ICD-10 code.
-    pub code: String,
-    /// Description of the ICD-10 code.
-    pub description: Option<String>,
-}
-
 //#[serde_as]
 //#[derive(Clone, Debug, Serialize, Deserialize)]
-//pub struct Resolution {
-//    /// Internal ID to represent the resolution state.
+//pub struct LabOrderTest {
+//    /// The ID of the Lab Order Test.
 //    pub id: i64,
-//    /// Will be the same as the ID of the lab order.
-//    pub document: i64,
-//    /// If the order is fulfilled, will indicate the document referenced.
-//    pub resolving_document: Option<i64>,
-//    /// The resolution state of the order.
-//    pub state: ResolutionState,
-//    /// Any note that was added to represent why an order was cancelled.
-//    pub note: Option<String>,
-//    /// The datetime when this resolution state was created.
+//    /// The name of the Lab Order Test.
+//    pub name: String,
+//    /// Any code associated with the test, usually provided by the lab vendor's compendium.
+//    pub code: Option<String>,
+//    /// Code provided by specific compendiums that indicate the "class" of test.
+//    pub procedure_class: Option<String>,
+//    /// The ID of the practice that created the test if practice created.
+//    pub practice_created: Option<i64>,
+//    /// The ID of the lab vendor who provides the lab order test.
+//    pub lab_vendor: Option<i64>,
+//    /// The ID of the compendium provided by the lab vendor.
+//    pub compendium: Option<i64>,
+//    /// A list of CPT codes associated with the lab order test.
+//    pub cpts: Vec<String>,
+//    /// A list of synonyms that are useful when searching for a specific test.
+//    pub synonyms: Vec<String>,
+//    /// A list of Ask on Entry (AOE) Questions that need to be answered by the orderer when creating the order.
+//    pub questions: Vec<AOEQuestion>,
+//    /// Time at which Elation created this Lab Order Test.
 //    #[serde_as(as = "Option<Rfc3339>")]
 //    pub created_date: Option<OffsetDateTime>,
-//    /// The datetime when this resolution was deleted.
+//    /// Time at which this Lab Order Test was deleted.
 //    #[serde_as(as = "Option<Rfc3339>")]
 //    pub deleted_date: Option<OffsetDateTime>,
 //}
 
 //#[derive(Clone, Debug, Serialize, Deserialize)]
-//#[serde(rename_all = "lowercase")]
-//pub enum ResolutionState {
-//    Outstanding,
-//    Fulfilled,
-//    Cancelled,
+//pub struct Icd10Code {
+//    /// The ICD-10 code.
+//    pub code: String,
+//    /// Description of the ICD-10 code.
+//    pub description: Option<String>,
 //}
 
 #[serde_as]
@@ -410,7 +382,7 @@ pub struct LabOrderForUpdate {
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct LabOrderContentForCreate {
     /// The list of tests that should be performed by the lab.
-    pub tests: Vec<LabOrderTestForCreate>,
+    pub tests: Vec<i64>,
     /// The type of report to get for the order if urgent.
     pub stat_method: Option<StatMethod>,
     /// Notes for patient.
@@ -436,7 +408,7 @@ pub struct LabOrderContentForCreate {
 #[derive(Clone, Debug, Serialize, Deserialize, Default)]
 pub struct LabOrderContentForUpdate {
     /// The list of tests that should be performed by the lab.
-    pub tests: Option<Vec<LabOrderTestForCreate>>,
+    pub tests: Option<Vec<i64>>,
     /// The type of report to get for the order if urgent.
     pub stat_method: Option<StatMethod>,
     /// Notes for patient.
@@ -455,14 +427,6 @@ pub struct LabOrderContentForUpdate {
     pub collection_datetime: Option<OffsetDateTime>,
     /// ICD-10 diagnosis codes provided along with the order.
     pub icd10_codes: Option<Vec<Icd10Code>>,
-}
-
-/// Represents a lab order test for creation.
-#[derive(Clone, Debug, Serialize, Deserialize)]
-pub struct LabOrderTestForCreate {
-    /// The ID of the Lab Order Test.
-    pub id: i64,
-    // Additional fields can be added if needed.
 }
 
 /// Represents the resolution data for creating or updating a lab order.

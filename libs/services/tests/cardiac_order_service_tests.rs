@@ -3,7 +3,7 @@ mod tests {
     use client::Client;
     use httpmock::Method::{DELETE, GET, PATCH, POST, PUT};
     use httpmock::MockServer;
-    use models::orders::*;
+    use models::{orders::*, Icd10Code};
     use services::orders::CardiacOrderService;
     use services::prelude::*;
     use time::{Date, OffsetDateTime};

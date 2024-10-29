@@ -4,7 +4,7 @@ mod tests {
     use httpmock::Method::{DELETE, GET, PATCH, POST};
     use httpmock::MockServer;
     use models::{orders::*, Icd10Code};
-    use services::orders::PulmonaryOrderService;
+    use services::orders::SleepOrderService;
     use services::prelude::*;
 
     use serial_test::serial;
@@ -12,7 +12,7 @@ mod tests {
 
     #[serial]
     #[tokio::test]
-    async fn test_get_pulmonary_order_success() {
+    async fn test_get_sleep_order_success() {
         // Start a local mock server
         let server = MockServer::start_async().await;
 
@@ -20,21 +20,21 @@ mod tests {
         std::env::set_var("TEST_ENV", "TRUE");
         std::env::set_var("MOCK_SERVER_URL", server.base_url());
 
-        // Mock the GET /pulmonary_orders/{id}/ endpoint
+        // Mock the GET /sleep_orders/{id}/ endpoint
         let order_id = 140756377075740;
-        let pulmonary_order = get_mock_pulmonary_order(order_id);
+        let sleep_order = get_mock_sleep_order(order_id);
 
         let mock = server.mock(|when, then| {
             when.method(GET)
-                .path(format!("/pulmonary_orders/{}/", order_id));
+                .path(format!("/sleep_orders/{}/", order_id));
             then.status(200)
                 .header("Content-Type", "application/json")
-                .body(serde_json::to_string(&pulmonary_order).unwrap());
+                .body(serde_json::to_string(&sleep_order).unwrap());
         });
 
         // Create a client pointing to the mock server
         let client = Client::new().await.unwrap();
-        let service = PulmonaryOrderService::new(&client);
+        let service = SleepOrderService::new(&client);
 
         // Call the method under test
         let result = service.get(order_id).await;
@@ -51,7 +51,7 @@ mod tests {
 
     #[serial]
     #[tokio::test]
-    async fn test_find_pulmonary_orders_success() {
+    async fn test_find_sleep_orders_success() {
         // Start a local mock server
         let server = MockServer::start_async().await;
 
@@ -59,15 +59,15 @@ mod tests {
         std::env::set_var("TEST_ENV", "TRUE");
         std::env::set_var("MOCK_SERVER_URL", server.base_url());
 
-        let mock_order = get_mock_pulmonary_order(140756377075740);
+        let mock_order = get_mock_sleep_order(140756377075740);
 
         let orders = vec![mock_order.clone()];
         let orders_json = serde_json::to_string(&orders).unwrap();
 
-        // Mock the GET /pulmonary_orders/ endpoint with query parameters
+        // Mock the GET /sleep_orders/ endpoint with query parameters
         let mock = server.mock(|when, then| {
             when.method(GET)
-                .path("/pulmonary_orders/")
+                .path("/sleep_orders/")
                 .query_param("patient", "140756664516609");
 
             then.status(200)
@@ -79,16 +79,18 @@ mod tests {
 
         // Create a client pointing to the mock server
         let client = Client::new().await.unwrap();
-        let service = PulmonaryOrderService::new(&client);
+        let service = SleepOrderService::new(&client);
 
         // Prepare query parameters
-        let query_params = PulmonaryOrderQueryParams {
+        let query_params = SleepOrderQueryParams {
             patient: Some(140756664516609),
             ..Default::default()
         };
 
         // Call the method under test
         let result = service.find(query_params).await;
+
+        println!("{result:#?}");
 
         // Assert the result
         assert!(result.is_ok());
@@ -103,7 +105,7 @@ mod tests {
 
     #[serial]
     #[tokio::test]
-    async fn test_create_pulmonary_order_success() {
+    async fn test_create_sleep_order_success() {
         // Start a local mock server
         let server = MockServer::start_async().await;
 
@@ -112,8 +114,7 @@ mod tests {
         std::env::set_var("MOCK_SERVER_URL", server.base_url());
 
         // Prepare the order data to create
-        let order_for_create = PulmonaryOrderForCreate {
-            allergies: Some("Penicillin".to_string()),
+        let order_for_create = SleepOrderForCreate {
             ancillary_company: 140755855605768,
             ccs: Some(vec![131074]),
             chart_date: Date::from_calendar_date(2021, Month::May, 26).unwrap(),
@@ -130,18 +131,18 @@ mod tests {
             patient: 140756664516609,
             practice: 140756660256772,
             prescribing_user: 2032,
-            pulmonary_center: Some(140755855671306),
-            tests: vec![PulmonaryOrderTestForOrder {
+            sleep_center: Some(140755855671306),
+            tests: vec![SleepOrderTestForOrder {
                 id: 140756665106487,
             }],
         };
 
-        let created_order = get_mock_pulmonary_order(140756377075741);
+        let created_order = get_mock_sleep_order(140756377075741);
 
-        // Mock the POST /pulmonary_orders/ endpoint
+        // Mock the POST /sleep_orders/ endpoint
         let mock = server.mock(|when, then| {
             when.method(POST)
-                .path("/pulmonary_orders")
+                .path("/sleep_orders")
                 .header("Content-Type", "application/json")
                 .body(serde_json::to_string(&order_for_create).unwrap());
             then.status(201)
@@ -151,7 +152,7 @@ mod tests {
 
         // Create a client pointing to the mock server
         let client = Client::new().await.unwrap();
-        let service = PulmonaryOrderService::new(&client);
+        let service = SleepOrderService::new(&client);
 
         // Call the method under test
         let result = service.post(&order_for_create).await;
@@ -168,7 +169,7 @@ mod tests {
 
     #[serial]
     #[tokio::test]
-    async fn test_update_pulmonary_order_success() {
+    async fn test_update_sleep_order_success() {
         // Start a local mock server
         let server = MockServer::start_async().await;
 
@@ -177,17 +178,17 @@ mod tests {
         std::env::set_var("MOCK_SERVER_URL", server.base_url());
 
         // Prepare the order data to update
-        let order_for_update = PulmonaryOrderForUpdate {
+        let order_for_update = SleepOrderForUpdate {
             clinical_reason: Some("Updated reason".to_string()),
             ..Default::default()
         };
 
-        let updated_order = get_mock_pulmonary_order(140756377075740);
+        let updated_order = get_mock_sleep_order(140756377075740);
 
-        // Mock the PATCH /pulmonary_orders/{id}/ endpoint
+        // Mock the PATCH /sleep_orders/{id}/ endpoint
         let mock = server.mock(|when, then| {
             when.method(PATCH)
-                .path(format!("/pulmonary_orders/{}/", updated_order.id))
+                .path(format!("/sleep_orders/{}/", updated_order.id))
                 .header("Content-Type", "application/json")
                 .body(serde_json::to_string(&order_for_update).unwrap());
             then.status(200)
@@ -197,7 +198,7 @@ mod tests {
 
         // Create a client pointing to the mock server
         let client = Client::new().await.unwrap();
-        let service = PulmonaryOrderService::new(&client);
+        let service = SleepOrderService::new(&client);
 
         // Call the method under test
         let result = service.patch(updated_order.id, &order_for_update).await;
@@ -213,7 +214,7 @@ mod tests {
 
     #[serial]
     #[tokio::test]
-    async fn test_delete_pulmonary_order_success() {
+    async fn test_delete_sleep_order_success() {
         // Start a local mock server
         let server = MockServer::start_async().await;
 
@@ -221,17 +222,17 @@ mod tests {
         std::env::set_var("TEST_ENV", "TRUE");
         std::env::set_var("MOCK_SERVER_URL", server.base_url());
 
-        // Mock the DELETE /pulmonary_orders/{id}/ endpoint
+        // Mock the DELETE /sleep_orders/{id}/ endpoint
         let order_id = 140756377075740;
         let mock = server.mock(|when, then| {
             when.method(DELETE)
-                .path(format!("/pulmonary_orders/{}/", order_id));
+                .path(format!("/sleep_orders/{}/", order_id));
             then.status(204); // No Content
         });
 
         // Create a client pointing to the mock server
         let client = Client::new().await.unwrap();
-        let service = PulmonaryOrderService::new(&client);
+        let service = SleepOrderService::new(&client);
 
         // Call the method under test
         let result = service.delete(order_id).await;
@@ -245,7 +246,7 @@ mod tests {
 
     #[serial]
     #[tokio::test]
-    async fn test_get_pulmonary_order_not_found() {
+    async fn test_get_sleep_order_not_found() {
         // Start a local mock server
         let server = MockServer::start_async().await;
 
@@ -253,11 +254,11 @@ mod tests {
         std::env::set_var("TEST_ENV", "TRUE");
         std::env::set_var("MOCK_SERVER_URL", server.base_url());
 
-        // Mock the GET /pulmonary_orders/{id}/ endpoint to return 404
+        // Mock the GET /sleep_orders/{id}/ endpoint to return 404
         let order_id = 999999;
         let mock = server.mock(|when, then| {
             when.method(GET)
-                .path(format!("/pulmonary_orders/{}/", order_id));
+                .path(format!("/sleep_orders/{}/", order_id));
             then.status(404)
                 .header("Content-Type", "application/json")
                 .body(
@@ -269,7 +270,7 @@ mod tests {
 
         // Create a client pointing to the mock server
         let client = Client::new().await.unwrap();
-        let service = PulmonaryOrderService::new(&client);
+        let service = SleepOrderService::new(&client);
 
         // Call the method under test
         let result = service.get(order_id).await;
@@ -293,10 +294,9 @@ mod tests {
         mock.assert_async().await;
     }
 
-    fn get_mock_pulmonary_order(order_id: i64) -> PulmonaryOrder {
-        PulmonaryOrder {
+    fn get_mock_sleep_order(order_id: i64) -> SleepOrder {
+        SleepOrder {
             id: order_id,
-            allergies: Some("Penicillin".to_string()),
             ancillary_company: 140755855605768,
             ccs: Some(vec![131074]),
             chart_date: Some(OffsetDateTime::now_utc()),
@@ -326,9 +326,9 @@ mod tests {
                 created_date: Some(OffsetDateTime::now_utc()),
                 deleted_date: None,
             }),
-            pulmonary_center: Some(140755855671306),
+            sleep_center: Some(140755855671306),
             test_date: Some(Date::from_calendar_date(2021, Month::May, 27).unwrap()),
-            tests: vec![PulmonaryOrderTest {
+            tests: vec![SleepOrderTest {
                 id: 140756665106487,
                 code: None,
                 name: "test".to_string(),

@@ -1,21 +1,12 @@
-use super::{Icd10Code, ImagingOrderTest};
+use super::ImagingOrderTest;
 use serde::{Deserialize, Serialize};
 use serde_with::serde_as;
 use time::{Date, OffsetDateTime};
 use utils::time::Rfc3339;
 
-use crate::resource::Resource;
+use crate::{resource::Resource, Icd10Code};
 
 time::serde::format_description!(one_true_date, Date, "[year]-[month]-[day]");
-
-///// Represents an ICD-10 code associated with an imaging order.
-//#[derive(Clone, Debug, Serialize, Deserialize)]
-//pub struct Icd10Code {
-//    /// The ICD-10 code.
-//    pub code: String,
-//    /// The description of the ICD-10 code.
-//    pub description: String,
-//}
 
 #[serde_as]
 /// Represents the resolution state of an imaging order.

@@ -1,7 +1,7 @@
-// Generated modules
 pub mod billing;
 pub mod care_gaps;
 pub mod event_subscription;
+pub mod general;
 pub mod insurance;
 pub mod insurance_premium;
 pub mod messaging;
@@ -15,5 +15,6 @@ pub mod user_management;
 
 pub mod resource;
 
-// Re-export common models if desired
-pub use patient_profile::Patient;
+pub use general::*;
+pub use orders::*;
+pub use patient_profile::*;

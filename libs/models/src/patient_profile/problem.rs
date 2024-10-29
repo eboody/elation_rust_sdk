@@ -117,13 +117,6 @@ pub struct ProblemForUpdate {
     pub start_date: Option<Date>,
 }
 
-/// Represents an ICD-10 code object.
-#[derive(Debug, Serialize, Deserialize)]
-pub struct Icd10Code {
-    /// The ICD-10 code.
-    pub code: String,
-}
-
 /// Represents query parameters for searching patients.
 #[serde_as]
 #[derive(Clone, Debug, Default, Serialize, Deserialize)]

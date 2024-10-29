@@ -3,7 +3,7 @@ mod tests {
     use client::Client;
     use httpmock::Method::{DELETE, GET, PATCH, POST};
     use httpmock::MockServer;
-    use models::orders::*;
+    use models::{orders::*, Icd10Code};
     use services::orders::LabOrderService;
     use services::prelude::*;
     use time::{Date, OffsetDateTime};
@@ -75,9 +75,7 @@ mod tests {
             test_date: Some(Date::from_calendar_date(2021, time::Month::March, 25).unwrap()),
             vendor: Some(67191701750),
             content: Some(LabOrderContentForCreate {
-                tests: vec![LabOrderTestForCreate {
-                    id: 140748306251838,
-                }],
+                tests: vec![140748306251838],
                 fasting_method: Some(FastingMethod::FastingRandom),
                 patient_instructions: Some("Please fast for 8 hours before the test.".to_string()),
                 test_center_notes: Some("Handle with care.".to_string()),
@@ -308,11 +306,11 @@ mod tests {
                 tests: vec![LabOrderTest {
                     id: 140748306251838,
                     name: "TSH".to_string(),
-                    code: None,
+                    code: "1".to_string(),
                     procedure_class: None,
                     practice_created: None,
-                    lab_vendor: None,
-                    compendium: None,
+                    lab_vendor: 1,
+                    compendium: 1,
                     cpts: vec![],
                     synonyms: vec![],
                     questions: vec![],

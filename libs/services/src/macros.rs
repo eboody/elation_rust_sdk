@@ -251,7 +251,7 @@ macro_rules! impl_service {
     ) => {
         doc_comment! {
             concat!(
-                "The `", stringify!($service_name), "` struct provides methods for managing `", stringify!($resource), "` resources.\n\n",
+                "Provides methods for managing [", stringify!($resource), "](models::", stringify!($resource) ,") resources.\n\n",
                 "### Overview\n",
                 "This service allows for operations on `", stringify!($resource), "` entities with methods depending on the specified traits (Check this pages Trait Implementations to see what methods this service has):\n\n",
                 $(
